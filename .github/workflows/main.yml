@@ -9,8 +9,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  docker:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       
+      - name: Start Containers
+        run: docker-compose -f "docker-compose.yaml" up build
+
+      - name: List Docker Images
+        run: docker images ls
