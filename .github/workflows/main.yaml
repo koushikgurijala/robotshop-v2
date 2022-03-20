@@ -39,5 +39,5 @@ jobs:
       
       - name: List Docker Images
         run: | 
-          echo $${{ steps.docker-builder.outputs.name }}
+          echo ${{ steps.docker-builder.outputs.name }}
           docker images ls
