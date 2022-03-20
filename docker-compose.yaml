@@ -29,7 +29,7 @@ services:
   catalogue:
     build:
       context: catalogue
-    image: /rs-catalogue
+    image: rs-catalogue
     depends_on:
       - mongodb
     networks:
