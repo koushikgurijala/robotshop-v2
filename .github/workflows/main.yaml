@@ -22,7 +22,7 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: eccho "$GITHUB_CONTEXT"
+        run: echo "$GITHUB_CONTEXT"
       - name: Dump job context
         if: failure()
         env:
@@ -37,7 +37,7 @@ jobs:
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
-        
+
       - name: Checkout
         uses: actions/checkout@v2
 
