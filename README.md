@@ -18,7 +18,7 @@
 
 ## WHAT IS CONTINUOUS TESTING VISION (CTV)
 
-![CTV Proposed Plan](readme/CTV Plan Doc.jpg)
+![CTV Proposed Plan](readme/ctv-proposed-plan-img.jpg)
 
 
 
