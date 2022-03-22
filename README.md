@@ -16,7 +16,7 @@
 7. [VERSIONING AND TAGGING PRACTICE ADAPTED](#toc-7)
 8. [CI, CD, Continuous Deployment Pipeline](#toc-8)
 
-## WHAT IS CONTINUOUS TESTING VISION (CTV)<a name="#toc-1"></a>
+## WHAT IS CONTINUOUS TESTING VISION (CTV)<a name="#toc-1"/>
 
 ![CTV Proposed Plan](readme/ctv-proposed-plan-img.jpg)
 
