@@ -6,12 +6,12 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/workflows/*yaml'
-      - '.github/readme/*'
+      - 'readme/**'
   pull_request:
     paths-ignore:
       - '**.md'
       - '.github/workflows/*yaml'
-      - '.github/readme/*'
+      - 'readme/**'
       
   workflow_dispatch:
 
