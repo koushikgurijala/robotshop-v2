@@ -45,7 +45,7 @@ Continuous Testing Vision is all about integrating various testing methodologies
 2. Increasing the Deployment Frequency (Multiple Deployments Per Day)
 3. Minimizing Change failure rate (<0.15%)
 
-![image](https://user-images.githubusercontent.com/100637276/159636072-b3f009d5-d79d-4d45-94ab-bd05a502db74.png)
+![image](https://user-images.githubusercontent.com/100637276/159636455-73b114a2-b2e0-40b8-a619-8d1e3bcdc3b8.png)
 
 ## 3. What Is a Test Double ?
 
