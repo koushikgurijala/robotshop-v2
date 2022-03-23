@@ -1,10 +1,12 @@
 ![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
+[1. What Is Continuous Testing Vision (CTV)]
+
 # Continuous Testing Vision (Triangulum Project)
 
 
-## 1. What Is Continuous Testing Vision (CTV)<a name="#toc-1"/>
+## 1. What Is Continuous Testing Vision (CTV)
 
 To embrace the massive organizational shift in releasing quality and reliable software to the end users at a faster pace embracing the full potential of agile methodologies, It is mandatory to build a strong Continuous Testing pipeline to achieve Shift Left testing.
 
