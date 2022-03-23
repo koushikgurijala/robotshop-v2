@@ -80,13 +80,14 @@ In the micro service world with complex applications, Service Virtualization is 
 📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
 
 ![image](https://user-images.githubusercontent.com/100637276/159629077-6350437b-171e-47f3-9c2d-c7cc39d7c47b.png)
-
    
-
+<br>
+<br>
 
 ### Comparision between Stubs, Mocks and Virtual Services
 
-
+<br>
+<br>
 
 |                     | **Response Source** | **Data Variety** | **Invocation Verification**   | **Created By** | **State Perseverance** |
 |---------------------|---------------------|------------------|-------------------------------|----------------|------------------------|
@@ -94,8 +95,8 @@ In the micro service world with complex applications, Service Virtualization is 
 | **Mock**            | Data Set (JSON)     | Medium           | Same Process and HTTP         | Developers     | Yes                    |
 | **Virtual Service** | Recorded Data       | High             | HTTP and Many other Protocols | Testers        | Yes                    |
 
-
-
+<br>
+<br>
 
 
 |                     | **When to Use**                                                                                                                                                              | **When Not to Use**                                                                                      | **Support Protocols**         |
@@ -105,17 +106,17 @@ In the micro service world with complex applications, Service Virtualization is 
 | **Virtual Service** | Large scale applications that have<br>many APIs. Need support for protocols<br>other than HTTP. To test non-functional<br>requirements like latency, throughput <br>and more | Agile teams in small to medium size.<br>When the applications are loosely<br>coupled and ideally modular | HTTP and Many other Protocols |
 
 
-### Comparision of various Mocking and Service Virtualization Tools
+## Comparision of various Mocking and Service Virtualization Tools
 
+After a thorough research of various available open source and paid tools, considering the wider open source community, wider adaption, extended support for languages and the problems they solve besides compliance with multiple frameworks, the below list of tools are identified for implementation of Continuous Testing Vision
 
-
-
-
-
-
-
-
-
-
-
+<br>
+<br>
+| **Mockito**                                                                                                    | **WireMock**                                                              | **BlazeMeter Mock Services**                                                                         | **DevTest**                                                                                             |
+|----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| Freeware                                                                                                       | Freeware                                                                  | Licensed                                                                                             | Licensed                                                                                                |
+| Mockito provides the<br>mock implementation of<br>the method/object                                            | Provides simulation for <br>HTTP based APIs                               | Mock Services only support<br>HTTP Protocols                                                         | Full Fledged support for <br>virtualizing almost any<br>service via wide range of<br>protocols          |
+| Mockito is designed<br>Unit Testing                                                                            | WireMock is designed for <br>component testing and<br>integration testing | Functional, Regression and<br>Performance Testing                                                    | Functional, Regression and<br>Performance Testing                                                       |
+| Used in Development stage<br>of SDLC                                                                           | During early API Integration                                              | When In-house and Third party <br>systems are unavailable, TDM <br>dependency and during load issues | When In-house and Third Party<br>systems are unavailable, TDM <br>dependency and during load<br>issues. |
+| Support for all Object<br>Oriented Languages (Java, PHP) and<br>Python, Flex, JavaScript, Scala,<br>TypeScript | Supports HTTP based API calls                                             | Supports HTTP(S) only as of now.<br>BlazeMeter can integrate with <br>Broadcom's DevTest             | Supports 30+ Protocols                                                                                  |
 
