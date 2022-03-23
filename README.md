@@ -1,14 +1,14 @@
 ![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
-## Table of contents
+# Continuous Testing Vision (Triangulum Project)
 
 
-## What Is Continuous Testing Vision (CTV)<a name="#toc-1"/>
+## 1. What Is Continuous Testing Vision (CTV)<a name="#toc-1"/>
 
 To embrace the massive organizational shift in releasing quality and reliable software to the end users at a faster pace embracing the full potential of agile methodologies, It is mandatory to build a strong Continuous Testing pipeline to achieve Shift Left testing.
 
-#### Need for Shift Left testing approach:
+#### 1.1 Need for Shift Left testing approach:
 
 Shift-left testing is important because it helps to prevent the following types of harm due to late testing:
 
@@ -26,7 +26,7 @@ Below image highlights our goal of building continuous testing with shift-left a
 
 :memo: Note: The master and feature branch illustrated in the above image is for information purpose and doesn't bias towards any branching strategy
 
-## HOW DOES CTV HELP IN ENGINEERING PRODUCTIVITY
+## 2. How Does CTV Help In Engineering Productivity
 Continuous Testing Vision is all about integrating various testing methodologies in the Release pipeline to acheive the goals of 
 1. Decreasing the Lead Time for Changes (to One Day)
 2. Increasing the Deployment Frequency (Multiple Deployments Per Day)
@@ -34,7 +34,7 @@ Continuous Testing Vision is all about integrating various testing methodologies
 
 ![CTV Areas of Positive Impact](readme/ctv-areas-of-positive-impact.jpg)
 
-## WHAT IS A TEST DOUBLE ?
+## 3. What Is a Test Double ?
 
 In automated testing usage of objects that look and behave like their production equivalents, but are actually simplified is a Test Double. This reduces complexity, allows to verify code independently from the rest of the system and sometimes it is even necessary to execute self validating tests at all. A Test Double is a generic term used for these objects.
 
@@ -44,19 +44,19 @@ Majorly used types of Test Doubles
 * Mocks
 * Virtual Services
 
-### What is a Stub ?
+### 3.1 What is a Stub ?
 
 Stub provides hard-coded answers to calls done during the test. It’s an object, in most cases, responding only to what was programmed in for test purposes, nothing else. We can say that stub overrides methods and returns needed for test values. The purpose of a stub is to prepare a specific state of your system under the test.
 
-### What is a Mock ?
+### 3.2 What is a Mock ?
 
 Mock is a part of your test that you have to set up with expectations. It’s an object pre-programmed with expectations about calls it’s expected to receive. The purpose of a mock is to make assertions about how the system will interact with the dependency. In other words, mock verify the interactions between objects. So, you don’t expect that mock return some value (like in the case of stub object), but to check that specific method was called.
 
-### Difference between a Stub and a Mock ?
+### 3.3 Difference between a Stub and a Mock ?
 
 A stub is an object that returns a hard-coded answer. So it represents a specific state of the real object. Mock, on the other hand, verifies if a specific method was called. It’s testing the behavior besides returning data to the question or call. The idea is stub returns hardcoded data to the question or call and mock verifies if the question or call was made with data response.
 
-### What is Service Virtualization ?
+### 3.4 What is Service Virtualization ?
 
 It is the practice of creating virtual services and sharing them between developers and testers within a team and across teams. Developers and testers working on the same product can use the same virtual service artifacts or even virtual services. Another example is test teams across a large enterprise using the same virtual service artifacts. It promotes communication between development and test teams across many departments. It also attempts to address the problem of duplicated efforts by creating stubs for the same APIs within a large organisation by many teams simultaneously, by establishing new communication channels between teams. We will look at the trade-offs later.
 
@@ -69,7 +69,7 @@ In the micro service world with complex applications, Service Virtualization is 
 <br>
 <br>
 
-## Comparision between Stubs, Mocks and Virtual Services
+## 4. Comparision between Stubs, Mocks and Virtual Services
 
 <br>
 <br>
@@ -93,7 +93,7 @@ In the micro service world with complex applications, Service Virtualization is 
 <br>
 <br>
 
-## Comparision of various Mocking and Service Virtualization Tools
+## 5. Comparision of various Mocking and Service Virtualization Tools
 
 <br>
 
