@@ -45,3 +45,15 @@ Continuous Testing Vision is all about integrating various testing methodologies
 3. Minimizing Change failure rate (<0.15%)
 
 ![CTV Areas of Positive Impact](readme/ctv-areas-of-positive-impact.jpg)
+
+## WHAT IS A TEST DOUBLE ?
+
+In automated testing usage of objects that look and behave like their production equivalents, but are actually simplified is a Test Double. This reduces complexity, allows to verify code independently from the rest of the system and sometimes it is even necessary to execute self validating tests at all. A Test Double is a generic term used for these objects.
+
+Majorly used types of Test Doubles
+
+* Stubs 
+* Mocks
+* Virtual Services
+
+
