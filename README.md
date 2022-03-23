@@ -1,5 +1,5 @@
-![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases&style=for-the-badge)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?style=for-the-badge)
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
 ## Table of contents
 1. [WHAT IS CONTINUOUS TESTING VISION (CTV)](#toc-1)
@@ -58,5 +58,51 @@ Majorly used types of Test Doubles
 * Stubs 
 * Mocks
 * Virtual Services
+
+### What is a Stub ?
+
+Stub provides hard-coded answers to calls done during the test. It’s an object, in most cases, responding only to what was programmed in for test purposes, nothing else. We can say that stub overrides methods and returns needed for test values. The purpose of a stub is to prepare a specific state of your system under the test.
+
+### What is a Mock ?
+
+Mock is a part of your test that you have to set up with expectations. It’s an object pre-programmed with expectations about calls it’s expected to receive. The purpose of a mock is to make assertions about how the system will interact with the dependency. In other words, mock verify the interactions between objects. So, you don’t expect that mock return some value (like in the case of stub object), but to check that specific method was called.
+
+### Difference between a Stub and a Mock ?
+
+A stub is an object that returns a hard-coded answer. So it represents a specific state of the real object. Mock, on the other hand, verifies if a specific method was called. It’s testing the behavior besides returning data to the question or call. The idea is stub returns hardcoded data to the question or call and mock verifies if the question or call was made with data response.
+
+### What is Service Virtualization ?
+
+It is the practice of creating virtual services and sharing them between developers and testers within a team and across teams. Developers and testers working on the same product can use the same virtual service artifacts or even virtual services. Another example is test teams across a large enterprise using the same virtual service artifacts. It promotes communication between development and test teams across many departments. It also attempts to address the problem of duplicated efforts by creating stubs for the same APIs within a large organisation by many teams simultaneously, by establishing new communication channels between teams. We will look at the trade-offs later.
+
+In the micro service world with complex applications, Service Virtualization is the go to solution.
+
+📝Below image illustrates the difference between a Mock vs a Virtual Service
+
+
+![image](https://user-images.githubusercontent.com/100637276/159614945-41535468-13ca-477c-b7c1-155f1e615bd8.png)
+   
+
+### Comparision between Stubs, Mocks and Virtual Services
+
+|                     | **Response Source** | **Data Variety** | **Invocation Verification**   | **Created By** | **State Perseverance** |
+|---------------------|---------------------|------------------|-------------------------------|----------------|------------------------|
+| **Stub**            | Hardcoded Data      | Less             | Same Process/Program          | Developers     | No                     |
+| **Mock**            | Data Set (JSON)     | Medium           | Same Process and HTTP         | Developers     | Yes                    |
+| **Virtual Service** | Recorded Data       | High             | HTTP and Many other Protocols | Testers        | Yes                    |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
