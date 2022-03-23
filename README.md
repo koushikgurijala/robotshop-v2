@@ -43,3 +43,5 @@ Continuous Testing Vision is all about integrating various testing methodologies
 1. Decreasing the Lead Time for Changes (to One Day)
 2. Increasing the Deployment Frequency (Multiple Deployments Per Day)
 3. Minimizing Change failure rate (<0.15%)
+
+![CTV Areas of Positive Impact](readme/ctv-areas-of-positive-impact.jpg)
