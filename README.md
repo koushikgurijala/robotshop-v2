@@ -77,13 +77,16 @@ It is the practice of creating virtual services and sharing them between develop
 
 In the micro service world with complex applications, Service Virtualization is the go to solution.
 
-📝Below image illustrates the difference between a Mock vs a Virtual Service
+📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
 
+![image](https://user-images.githubusercontent.com/100637276/159629077-6350437b-171e-47f3-9c2d-c7cc39d7c47b.png)
 
-![image](https://user-images.githubusercontent.com/100637276/159614945-41535468-13ca-477c-b7c1-155f1e615bd8.png)
    
 
+
 ### Comparision between Stubs, Mocks and Virtual Services
+
+
 
 |                     | **Response Source** | **Data Variety** | **Invocation Verification**   | **Created By** | **State Perseverance** |
 |---------------------|---------------------|------------------|-------------------------------|----------------|------------------------|
@@ -93,6 +96,16 @@ In the micro service world with complex applications, Service Virtualization is 
 
 
 
+
+
+|                     | **When to Use**                                                                                                                                                              | **When Not to Use**                                                                                      | **Support Protocols**         |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------|
+| **Stub**            | When Test data needed is not <br>complex                                                                                                                                     | Not good for large suits of tests<br>with complex data                                                   | Same Process/Program          |
+| **Mock**            | Applicable in most of the cases                                                                                                                                              | When the micro services are<br>communicating over multiple protocols<br>other than HTTP                  | Same Process and HTTP         |
+| **Virtual Service** | Large scale applications that have<br>many APIs. Need support for protocols<br>other than HTTP. To test non-functional<br>requirements like latency, throughput <br>and more | Agile teams in small to medium size.<br>When the applications are loosely<br>coupled and ideally modular | HTTP and Many other Protocols |
+
+
+### Comparision of various Mocking and Service Virtualization Tools
 
 
 
