@@ -2,20 +2,6 @@
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
 ## Table of contents
-1. [What Is Continuous Testing Vision (CTV)](#toc-1)
-     1.1. [Need for Shift Left Testing Approach:](#toc-1-1)
-2. [How Does CTV Help In Engineering Prpductivity](#toc-2)
-3. [What Is a Test Double](#toc-3)
-     3.1. [What is a Stub?](#toc-3-1)
-     3.2. [What is a Mock?](#toc-3-2)
-     3.3. [Difference between a Stub and a Mock](#toc-3-3)
-     3.4. [What is Service Virtualization](#toc-3-4)
-4. [Comparision Between Stubs Mocks and Virtual Services](#toc-4)
-     4.1. [MOCKING USING MOCKITO](#toc-4-1)
-     4.2. [SERVICE VIRTUALIZATION USING WIREMOCK](#toc-4-2)
-     4.3. [SERVICE VIRTUALIZATION USING DEVTEST](#toc-4-3)
-5. [Comparision of Various Mocking and Service Virtualization tools](#toc-5)
-     5.1. [PERF TESTING USING BLAZE METER](#toc-5-1)
 
 
 ## What Is Continuous Testing Vision (CTV)<a name="#toc-1"/>
