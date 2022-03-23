@@ -2,24 +2,23 @@
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
 ## Table of contents
-1. [WHAT IS CONTINUOUS TESTING VISION (CTV)](#toc-1)
-2. [HOW DOES CTV HELP IN ENGINEERING PRODUCTIVITY](#toc-2)
-3. [PHASE 1 OF CTV - UNIT TESTING](#toc-3)
-     1. [FRAMEWORKS - UNDER BUILDING](#toc-3-1)
-4. [PHASE 2 OF CTV - TEST DOUBLES](#toc-4)
-     1. [MOCKING USING MOCKITO](#toc-4-1)
-     2. [SERVICE VIRTUALIZATION USING WIREMOCK](#toc-4-2)
-     3. [SERVICE VIRTUALIZATION USING DEVTEST](#toc-4-3)
-5. [PHASE 3 OF CTV = PERFORMANCE TESTING](#toc-5)
-     1. [PERF TESTING USING BLAZE METER](#toc-5-1)
-     2. [SUPPORTED FRAMEWORK - 1](#toc-5-2)
-     3. [SUPPORTED FRAMEWORK - 2](#toc-5-3)
-     4. [SUPPORTED FRAMEWORK - 3](#toc-5-4)
-6. [REFERENCE APPLICATION USED FOR CTV](#toc-6)
-7. [VERSIONING AND TAGGING PRACTICE ADAPTED](#toc-7)
-8. [CI, CD, Continuous Deployment Pipeline](#toc-8)
+1. [What Is Continuous Testing Vision (CTV)](#toc-1)
+     1.1. [Need for Shift Left Testing Approach:](#toc-1-1)
+2. [How Does CTV Help In Engineering Prpductivity](#toc-2)
+3. [What Is a Test Double](#toc-3)
+     3.1. [What is a Stub?](#toc-3-1)
+     3.2. [What is a Mock?](#toc-3-2)
+     3.3. [Difference between a Stub and a Mock](#toc-3-3)
+     3.4. [What is Service Virtualization](#toc-3-4)
+4. [Comparision Between Stubs Mocks and Virtual Services](#toc-4)
+     4.1. [MOCKING USING MOCKITO](#toc-4-1)
+     4.2. [SERVICE VIRTUALIZATION USING WIREMOCK](#toc-4-2)
+     4.3. [SERVICE VIRTUALIZATION USING DEVTEST](#toc-4-3)
+5. [Comparision of Various Mocking and Service Virtualization tools](#toc-5)
+     5.1. [PERF TESTING USING BLAZE METER](#toc-5-1)
 
-## WHAT IS CONTINUOUS TESTING VISION (CTV)<a name="#toc-1"/>
+
+## What Is Continuous Testing Vision (CTV)<a name="#toc-1"/>
 
 To embrace the massive organizational shift in releasing quality and reliable software to the end users at a faster pace embracing the full potential of agile methodologies, It is mandatory to build a strong Continuous Testing pipeline to achieve Shift Left testing.
 
@@ -84,7 +83,7 @@ In the micro service world with complex applications, Service Virtualization is 
 <br>
 <br>
 
-### Comparision between Stubs, Mocks and Virtual Services
+## Comparision between Stubs, Mocks and Virtual Services
 
 <br>
 <br>
@@ -105,13 +104,17 @@ In the micro service world with complex applications, Service Virtualization is 
 | **Mock**            | Applicable in most of the cases                                                                                                                                              | When the micro services are<br>communicating over multiple protocols<br>other than HTTP                  | Same Process and HTTP         |
 | **Virtual Service** | Large scale applications that have<br>many APIs. Need support for protocols<br>other than HTTP. To test non-functional<br>requirements like latency, throughput <br>and more | Agile teams in small to medium size.<br>When the applications are loosely<br>coupled and ideally modular | HTTP and Many other Protocols |
 
-
+<br>
+<br>
 ## Comparision of various Mocking and Service Virtualization Tools
+
+<br>
 
 After a thorough research of various available open source and paid tools, considering the wider open source community, wider adaption, extended support for languages and the problems they solve besides compliance with multiple frameworks, the below list of tools are identified for implementation of Continuous Testing Vision
 
 <br>
 <br>
+
 | **Mockito**                                                                                                    | **WireMock**                                                              | **BlazeMeter Mock Services**                                                                         | **DevTest**                                                                                             |
 |----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | Freeware                                                                                                       | Freeware                                                                  | Licensed                                                                                             | Licensed                                                                                                |
@@ -119,4 +122,3 @@ After a thorough research of various available open source and paid tools, consi
 | Mockito is designed<br>Unit Testing                                                                            | WireMock is designed for <br>component testing and<br>integration testing | Functional, Regression and<br>Performance Testing                                                    | Functional, Regression and<br>Performance Testing                                                       |
 | Used in Development stage<br>of SDLC                                                                           | During early API Integration                                              | When In-house and Third party <br>systems are unavailable, TDM <br>dependency and during load issues | When In-house and Third Party<br>systems are unavailable, TDM <br>dependency and during load<br>issues. |
 | Support for all Object<br>Oriented Languages (Java, PHP) and<br>Python, Flex, JavaScript, Scala,<br>TypeScript | Supports HTTP based API calls                                             | Supports HTTP(S) only as of now.<br>BlazeMeter can integrate with <br>Broadcom's DevTest             | Supports 30+ Protocols                                                                                  |
-
