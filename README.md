@@ -24,11 +24,11 @@ To embrace the massive organizational shift in releasing quality and reliable so
 
 Shift-left testing is important because it helps to prevent the following types of harm due to late testing:
 
-*Testers may be less involved in initial planning, often resulting in insufficient resources being allocated to testing.
-*Defects in requirements, architecture, and design remain undiscovered while significant effort is wasted implementing them.
-*Debugging (including identifying, localizing, fixing, and regression testing defects) becomes harder as more software is produced and integrated.
-*Encapsulation impedes white-box testing, reducing code coverage during testing.
-*There is less time to fix defects found by testing, thereby increasing the likelihood that they will be postponed until later increments or versions of the system. 
+* Testers may be less involved in initial planning, often resulting in insufficient resources being allocated to testing.
+* Defects in requirements, architecture, and design remain undiscovered while significant effort is wasted implementing them.
+* Debugging (including identifying, localizing, fixing, and regression testing defects) becomes harder as more software is produced and integrated.
+* Encapsulation impedes white-box testing, reducing code coverage during testing.
+* There is less time to fix defects found by testing, thereby increasing the likelihood that they will be postponed until later increments or versions of the system. 
 
 This creates a “bow wave” of technical debt that can sink projects if it grows too large and especially in the era of Micro Services.
 
@@ -36,6 +36,7 @@ Below image highlights our goal of building continuous testing with shift-left a
 
 ![CTV Proposed Plan](readme/ctv-proposed-plan-img.jpg)
 
+:memo: Note: The master and feature branch illustrated in the above image is for information purpose and doesn't bias towards any branching strategy
 
 ## HOW DOES CTV HELP IN ENGINEERING PRODUCTIVITY
 Continuous Testing Vision is all about integrating various testing methodologies in the Release pipeline to acheive the goals of 
