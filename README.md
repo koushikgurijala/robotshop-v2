@@ -1,3 +1,5 @@
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/koushikgurijala/telus%20/%20triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
+
 ## Table of contents
 1. [WHAT IS CONTINUOUS TESTING VISION (CTV)](#toc-1)
 2. [HOW DOES CTV HELP IN ENGINEERING PRODUCTIVITY](#toc-2)
