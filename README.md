@@ -12,6 +12,7 @@
     + [3.4 What is Service Virtualization ?](#34-what-is-service-virtualization)
   * [4. Comparision between Stubs, Mocks and Virtual Services](#4-comparision-between-stubs--mocks-and-virtual-services)
   * [5. Comparision of various Mocking and Service Virtualization Tools](#5-comparision-of-various-mocking-and-service-virtualization-tools)
+  * [6. Implementation of DevOps Pipleline as Code for Mocking using Mockito](#6-impmelentation-of-devops-pipeline-as-code-for-mocking-using-mockito)
 
 # Continuous Testing Vision (Triangulum Project)
 <br>
@@ -122,3 +123,12 @@ After a thorough research of various available open source and paid tools, consi
 | Mockito is designed<br>Unit Testing                                                                            | WireMock is designed for <br>component testing and<br>integration testing | Functional, Regression and<br>Performance Testing                                                    | Functional, Regression and<br>Performance Testing                                                       |
 | Used in Development stage<br>of SDLC                                                                           | During early API Integration                                              | When In-house and Third party <br>systems are unavailable, TDM <br>dependency and during load issues | When In-house and Third Party<br>systems are unavailable, TDM <br>dependency and during load<br>issues. |
 | Support for all Object<br>Oriented Languages (Java, PHP) and<br>Python, Flex, JavaScript, Scala,<br>TypeScript | Supports HTTP based API calls                                             | Supports HTTP(S) only as of now.<br>BlazeMeter can integrate with <br>Broadcom's DevTest             | Supports 30+ Protocols                                                                                  |
+
+<br>
+<br>
+
+## Implementation of DevOps Pipleline as Code for Mocking using Mockito
+
+
+
+
