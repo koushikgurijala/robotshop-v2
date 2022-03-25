@@ -135,4 +135,79 @@ After a thorough research of various available open source and paid tools, consi
 ![image](https://user-images.githubusercontent.com/100637276/160154772-8957b7b3-72a6-4998-a0ba-372106eb513e.png)
 
 
+<br>
+<br>
 
+```yaml
+name: Build
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/*yaml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      -main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/*yaml'
+      
+  workflow_dispatch:
+
+jobs:
+  build-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+          cache: Maven
+
+      #  - name: Cache SonarCloud packages
+      #   uses: actions/cache@v1
+      #    with:
+      #      path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #      restore-keys: ${{ runner.os }}-sonar
+
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v1
+      #  with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-m2
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -e -B clean compile test package --file HappyHotelApp/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=triangulum-ctv-per -Dsonar.junit.reportPaths=target/surefire-reports -Dsonar.surefire.reportsPath=target/surefire-reports
+
+      - name: Deploy
+        run: mvn -e deploy --file HappyHotelApp/pom.xml
+      # - name: Push Artifacts to Google Artifact Repo
+      #   run: mvn --file HappyHotelApp/pom.xml deploy
+
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+      - name: "Use gcloud CLI"
+        run: "gcloud info"
+
+```
