@@ -12,7 +12,7 @@
     + [3.4 What is Service Virtualization ?](#34-what-is-service-virtualization)
   * [4. Comparision between Stubs, Mocks and Virtual Services](#4-comparision-between-stubs--mocks-and-virtual-services)
   * [5. Comparision of various Mocking and Service Virtualization Tools](#5-comparision-of-various-mocking-and-service-virtualization-tools)
-  * [6. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito](#6-impmelentation-of-devops-pipeline-as-code-for-mocking-using-mockito)
+  * [6. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito](#6-pipeline-method-1-devops-pipeline-as-code-for-mocking-using-mockito)
 
 # Continuous Testing Vision (Triangulum Project)
 <br>
@@ -127,7 +127,7 @@ After a thorough research of various available open source and paid tools, consi
 <br>
 <br>
 
-## Implementation of DevOps Pipleline as Code for Mocking using Mockito
+## 6. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
 
 <br>
 <br>
