@@ -138,8 +138,10 @@ After a thorough research of various available open source and paid tools, consi
 <br>
 <br>
 
-🙋‍♂️🙋‍♂️🙋‍♂️This Workflow code is for https://github.com/telus/triangulum-ctv-happyHotelApp. Workflow will be ported to the current repo after implementation of Mockito test cases
+#### 🙋‍♂️🙋‍♂️🙋‍♂️This Workflow code is for https://github.com/telus/triangulum-ctv-happyHotelApp. Workflow will be ported to the current repo after implementation of Mockito test cases
 
+<br>
+<br>
 ```yaml
 name: Build
 on:
