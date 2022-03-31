@@ -14,7 +14,7 @@
   * [4. Brief Comparision between Stubs, Mocks and Virtual Services](#4-comparision-between-stubs--mocks-and-virtual-services--)
   * [5. Brief Comparision of various Mocking and Service Virtualization Tools](#5-comparision-of-various-mocking-and-service-virtualization-tools)
   * [6. Choice of Tools for CTV - SV Project Implementation:](#6-choice-of-toos-for-ctv-sv-project-implementation)
-  * [7. More insights on Broadcom DevTest](#7-more-insights-on-broadcom-devtest-)
+  * [7. More insights on Broadcom DevTest](#7-more-insights-on-broadcom-devtest-)(#7-more-insights-on-broacom-devtest)
   * [8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito:](8-pipeline-method-1---devops-pipleline-as-code-for-mocking-using-mockito)
 
 
@@ -301,6 +301,7 @@ The choice of * full fledged licensed Service Virtualization tool is Broadcom De
 * Ease of administration
 
 <br>
+
 #### Development Testing Team Deployments
 
 Easily store and launch test cases with CA Application Test as actionable assets alongside source code management (SCM), requirements management, build and issue tracking of test management tools.
@@ -310,6 +311,7 @@ Easily store and launch test cases with CA Application Test as actionable assets
 ![image](https://user-images.githubusercontent.com/100637276/161157477-920934bf-2bd3-4457-b104-c04b9722d3c0.png)
 
 <br>
+
 #### Functional Testing Team Deployments
 
 Run tests across the whole stack to validate APIs at every layer of a complex, multi-tiered application, allowing for complex workflows and the stateful behavior needed to achieve genuine reuse of test assets.
