@@ -12,6 +12,7 @@
     + [3.4 What is Service Virtualization ?](#34-what-is-service-virtualization--)
   * [4. Comparision between Stubs, Mocks and Virtual Services](#4-comparision-between-stubs--mocks-and-virtual-services--)
   * [5. Comparision of various Mocking and Service Virtualization Tools:](#5-comparision-of-various-mocking-and-service-virtualization-tools)
+  * [6. Choice of Tools for CTV - SV Project Implementation:](#6-choice-of-toos-for-ctv-sv-project-implementation)
   * [6. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito:](#6-pipeline-method-1---devops-pipleline-as-code-for-mocking-using-mockito)
 
 # Continuous Testing Vision (Triangulum Project)
@@ -62,6 +63,12 @@ Majorly used types of Test Doubles
 
 Stub provides hard-coded answers to calls done during the test. It’s an object, in most cases, responding only to what was programmed in for test purposes, nothing else. We can say that stub overrides methods and returns needed for test values. The purpose of a stub is to prepare a specific state of your system under the test.
 
+Primarily, we use it wherever the test suite is uncomplicated, and having hard-coded values is not a problem. Additionally, both developers and testers use it. But we can not share it mainly for compatibility concerns occurring due to hard-coding of resources, deployment dependencies, and platforms.
+
+Let us take an example of a game under development with Play, Exit, Up, and Down Arrow buttons.
+When game development is in progress, we have to verify user interfaces (Play, Exit, Up, and Down arrows), we shall implement some dummy actions. For example, on clicking on the Play button, a dummy action shall take place. Additionally, we can do the implementations as shown below:
+
+
 ### 3.2 What is a Mock ?
 
 Mock is a part of your test that you have to set up with expectations. It’s an object pre-programmed with expectations about calls it’s expected to receive. The purpose of a mock is to make assertions about how the system will interact with the dependency. In other words, mock verify the interactions between objects. So, you don’t expect that mock return some value (like in the case of stub object), but to check that specific method was called.
@@ -70,7 +77,115 @@ Mock is a part of your test that you have to set up with expectations. It’s an
 
 A stub is an object that returns a hard-coded answer. So it represents a specific state of the real object. Mock, on the other hand, verifies if a specific method was called. It’s testing the behavior besides returning data to the question or call. The idea is stub returns hardcoded data to the question or call and mock verifies if the question or call was made with data response.
 
-### 3.4 What is Service Virtualization ?
+## 3.5 Demsifying the Internals of Stubbing and Mocking
+
+In our example application, we have a class that reads a customer from the database and forms their full name.
+<br>
+Below is the code for the customer:
+
+```java
+@Entity
+	public class Customer {
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		  private long id;
+		  private String firstName;
+		  private String lastName;
+		//...getters and setters redacted for brevity...
+	}
+ 
+ ```
+ <br>
+and below is our business class:
+
+```
+	public class CustomerReader {
+		@PersistenceContext
+		  private EntityManager entityManager;
+		  
+    public String findFullName(Long customerID){
+			   Customer customer = entityManager.find(Customer.class, customerID);
+			   return customer.getFirstName() +" "+customer.getLastName();
+		  }
+	}
+
+```
+<br>
+In the above example, Our business class reads the customer info from the database through EntityManager.
+
+How to Test this Class ?
+
+On the first thought, the solution would be to pre-fill a real database with customers and run this test against it. This is problematic for a lot of reasons. It creates a hard dependency on a running database, and also requires an extra step to create the test data. For this example, you could make it work, but in a real-world application, this would not be practical at all.
+
+A better solution would be to use an in-memory database. This would solve the speed problem, but it would suffer from the extra step of pre-filling the database with custom test data. Again, in a real-world application, this can get quickly out of hand, especially when multiple tests also change the initial state of the database.
+
+The best solution for a true unit test is to completely remove the database dependency. We will stub the database connection instead, and “fool” our class to think that it is talking to a real EntityManager, while in reality, the EntityManager is a Mockito stub. This way, we have complete control over what is returned by the database connection without having to deal with an actual database.
+<br>
+Basic Unit Test for the above code is:
+<br>
+```java
+public class CustomerReaderTest {
+
+		@Test
+		public void happyPathScenario(){
+			 Customer sampleCustomer = new Customer();
+			 sampleCustomer.setFirstName("Susan");
+			 sampleCustomer.setLastName("Ivanova");
+		
+			 EntityManager entityManager = mock(EntityManager.class);
+			 when(entityManager.find(Customer.class,1L)).thenReturn(sampleCustomer);
+		
+			 CustomerReader customerReader = new CustomerReader();
+			 customerReader.setEntityManager(entityManager);
+		
+			 String fullName = customerReader.findFullName(1L);
+			 assertEquals("Susan Ivanova",fullName);
+		}
+}
+
+```
+<br>
+We are had coding the return values which our EntityManager is supposed to return "Susan Ivanova" , which have been otherwise retrieved from the connecting to the database. Now are able to test the class with out connnecting to the actual dependency.
+
+Now, Below code is slightly improvised to ensure our class has multiple external dependencies which is the case with many real time applications today.
+<br>
+```java
+public class LateInvoiceNotifier {
+
+		private final EmailSender emailSender;
+		private final InvoiceStorage invoiceStorage;
+	
+		public LateInvoiceNotifier(final EmailSender emailSender, final InvoiceStorage invoiceStorage){
+			this.emailSender = emailSender;
+			this.invoiceStorage = invoiceStorage;
+		}
+	
+		public void notifyIfLate(Customer customer)
+		{
+			if(invoiceStorage.hasOutstandingInvoice(customer)){
+				emailSender.sendEmail(customer);
+			}
+		}
+	}
+```
+<br>
+The above class has two external dependencies, and we use constructor injection this time around. It checks for late invoices of customers and sends them an email if an invoice is late.
+
+In a real system, the ```InvoiceStorage``` class is actually a web service that connects with an external legacy CRM system which is slow. A unit test could never make use of such a web service.
+
+The ```EmailSender``` class is also an external system from a third-party mass email provider. So, we will stub it as well.
+
+However, as soon as you try to write a unit test for this class, you will notice that nothing can really be asserted. The method that we want to test – ```notifyIfLate``` – is a void method that cannot return anything. 
+
+But when it comes to a system or class which has two or more external dependencies, thats when the Stubbing can't be a solution. Majority of enterprise grade applications are no so simple in nature and with the modularity with agility, stubbing can't be used for a component testing. Moreover hardcoding values for a request is only thing supported by stubbing. But when it comes to enterpsie grade applications, 
+
+📢 We will have 100s of calls made, variety of return valiues are expected. Hardcoding each one of them is a nightmare.
+📢 When the class is actually a web service, A stub can never make use of such a webservice or evaluate the web service calls.
+📢 Stubbing only does state testing and doesn't support interaction testing
+
+:exclamation: That is where mocking comes to rescue
+
+### 3.5 What is Service Virtualization ?
 
 It is the practice of creating virtual services and sharing them between developers and testers within a team and across teams. Developers and testers working on the same product can use the same virtual service artifacts or even virtual services. Another example is test teams across a large enterprise using the same virtual service artifacts. It promotes communication between development and test teams across many departments. It also attempts to address the problem of duplicated efforts by creating stubs for the same APIs within a large organisation by many teams simultaneously, by establishing new communication channels between teams. We will look at the trade-offs later.
 
@@ -79,6 +194,7 @@ In the micro service world with complex applications, Service Virtualization is 
 📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
 
 ![image](https://user-images.githubusercontent.com/100637276/159629077-6350437b-171e-47f3-9c2d-c7cc39d7c47b.png)
+
    
 <br>
 <br>
@@ -126,6 +242,21 @@ After a thorough research of various available open source and paid tools, consi
 
 <br>
 <br>
+
+
+
+
+
+
+
+
+
+
+## 6. Choice of Tools for CTV - SV Project Implementation
+
+
+
+
 
 ## 6. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
 
