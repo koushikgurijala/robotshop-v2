@@ -291,26 +291,33 @@ The choice of * full fledged licensed Service Virtualization tool is Broadcom De
 
 ## 7. More insights on Broadcom DevTest 
 
+
+<br>
+Development Testing Team Deployments
+
 <br>
 
-![image](https://user-images.githubusercontent.com/100637276/161149217-a3a2f781-7c52-4cd5-86e1-bc0ca15d516b.png)
+![image](https://user-images.githubusercontent.com/100637276/161157477-920934bf-2bd3-4457-b104-c04b9722d3c0.png)
+
+<br>
+Functional Testing Team Deployments
+
+<br>
+
+![image](https://user-images.githubusercontent.com/100637276/161157567-efdabe36-c0ee-42c9-8e0e-2575f7ce8c6f.png)
+
+<br>
+
+Anytest Anywhere
+
+![image](https://user-images.githubusercontent.com/100637276/161158468-0765d7e2-b41e-4d1d-9c53-4d165b128734.png)
 
 <br>
 
 ## 8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
 
 <br>
-<br>
 
-![image](https://user-images.githubusercontent.com/100637276/160154772-8957b7b3-72a6-4998-a0ba-372106eb513e.png)
-
-<br>
-<br>
-
-![image](https://user-images.githubusercontent.com/100637276/161151292-1e44f49e-e72b-4cab-99d3-f8c39ec89d37.png)
-
-<br>
-<br>
 
 #### 🙋‍♂️🙋‍♂️🙋‍♂️This Workflow code is for https://github.com/telus/triangulum-ctv-happyHotelApp. Workflow will be ported to the current repo after implementation of Mockito test cases
 
