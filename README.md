@@ -2,9 +2,9 @@
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
 - [Continuous Testing Vision (Triangulum Project)](#continuous-testing-vision--triangulum-project-)
-  * [1. What Is Continuous Testing Vision (CTV):](#1-what-is-continuous-testing-vision--ctv-)
-      - [1.1 Need for Shift Left testing approach:](#11-need-for-shift-left-testing-approach-)
-  * [2. How Does CTV Help In Engineering Productivity:](#2-how-does-ctv-help-in-engineering-productivity)
+  * [1. What Is Continuous Testing Vision (CTV)](#1-what-is-continuous-testing-vision--ctv-)
+      - [1.1 Need for Shift Left testing approach](#11-need-for-shift-left-testing-approach-)
+  * [2. How Does CTV Help In Engineering Productivity ?](#2-how-does-ctv-help-in-engineering-productivity--)
   * [3. What Is a Test Double ?:](#3-what-is-a-test-double--)
     + [3.1 What is a Stub ?](#31-what-is-a-stub--)
     + [3.2 What is a Mock ?](#32-what-is-a-mock--)
@@ -12,7 +12,7 @@
     + [3.4 Demsifying the Internals of Stubbing and Mocking](#34-demsifying-the-internals-of-stubbing-and-mocking)
     + [3.5 What is Service Virtualization ?](#35-what-is-service-virtualization--)
   * [4. Brief Comparision between Stubs, Mocks and Virtual Services](#4-comparision-between-stubs--mocks-and-virtual-services--)
-  * [5. Brief Comparision of various Mocking and Service Virtualization Tools:](#5-comparision-of-various-mocking-and-service-virtualization-tools)
+  * [5. Brief Comparision of various Mocking and Service Virtualization Tools](#5-comparision-of-various-mocking-and-service-virtualization-tools)
   * [6. Choice of Tools for CTV - SV Project Implementation:](#6-choice-of-toos-for-ctv-sv-project-implementation)
   * [7. More insights on Broadcom DevTest](#7-more-insights-on-broadcom-devtest-)
   * [8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito:](8-pipeline-method-1---devops-pipleline-as-code-for-mocking-using-mockito)
@@ -63,7 +63,9 @@ Majorly used types of Test Doubles
 * Virtual Services
 
 <br>
+
 ![image](https://user-images.githubusercontent.com/100637276/161110781-7f2df482-946f-486d-88d8-0c0acd48f905.png)
+
 <br>
 
 ### 3.1 What is a Stub ?
