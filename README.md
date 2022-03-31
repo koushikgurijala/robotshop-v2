@@ -190,9 +190,8 @@ But when it comes to a system or class which has two or more external dependenci
 
 * 📢 When the application becomes moderately complex and expects a variety of return values, Hardcoding each one of them becomes a nightmare and is unmanageable.
 * 📢 When the class is actually a web service, A stub can never make use of such a webservice or evaluate the web service calls.
-* 📢 Stubbing only does **state testing** and doesn't support **interaction testing**.
+* 📢 Stubbing only does **state testing** and doesn't support **interaction testing** while mocking does.
 
-:exclamation: That is where mocking comes to rescue
 
 ### 3.5 What is Service Virtualization ?
 
@@ -202,9 +201,8 @@ Service Virtualization, on the other hand, can emulate the full implementation o
 
 In the micro service world with complex applications, Service Virtualization is the go to solution but comes with a cost, complexity and hard to find skilled resources
 
-📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
-
-![image](https://user-images.githubusercontent.com/100637276/159629077-6350437b-171e-47f3-9c2d-c7cc39d7c47b.png)
+<br>
+![image](https://user-images.githubusercontent.com/100637276/161148990-1043a444-fdf6-4e8b-a0d1-29bdc7c1432a.png)
 
    
 <br>
@@ -235,6 +233,11 @@ In the micro service world with complex applications, Service Virtualization is 
 <br>
 
 ## 5. Brief Comparision of various Mocking and Service Virtualization Tools
+<br>
+
+📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
+
+![image](https://user-images.githubusercontent.com/100637276/159629077-6350437b-171e-47f3-9c2d-c7cc39d7c47b.png)
 
 <br>
 
