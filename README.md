@@ -291,16 +291,28 @@ The choice of * full fledged licensed Service Virtualization tool is Broadcom De
 
 ## 7. More insights on Broadcom DevTest 
 
+<p>With Broadcom DevTest, we can achieve </p>
+
+* Parallel development and testing in a DevOps environment
+* Shift left to test early and test more in the software lifecycle
+* Widest multi-protocol support available
+* Simulation of observed behaviors, stateful transactions, and performance scenarios
+* Realistic ways to emulate application testing
+* Ease of administration
 
 <br>
-Development Testing Team Deployments
+#### Development Testing Team Deployments
+
+Easily store and launch test cases with CA Application Test as actionable assets alongside source code management (SCM), requirements management, build and issue tracking of test management tools.
 
 <br>
 
 ![image](https://user-images.githubusercontent.com/100637276/161157477-920934bf-2bd3-4457-b104-c04b9722d3c0.png)
 
 <br>
-Functional Testing Team Deployments
+#### Functional Testing Team Deployments
+
+Run tests across the whole stack to validate APIs at every layer of a complex, multi-tiered application, allowing for complex workflows and the stateful behavior needed to achieve genuine reuse of test assets.
 
 <br>
 
@@ -308,11 +320,34 @@ Functional Testing Team Deployments
 
 <br>
 
-Anytest Anywhere
+#### Virtualize anything and test anything
+
+Out of the box, DevTest with CA Application Test and CA Service Virtualization features the broadest and deepest multi-data protocol support across front-end, middleware, and back-end technologies.
+
+* Common web services protocols: HTTP, HTTPS, REST, SOAP, XML, JSON
+* ESB/middleware protocols: WebSphere® MQ, WebSphere Native, Standard JMS, Tibco JMS, Rabbit MQ
+* Mainframe protocols: CICS Link, CICS Transaction Gateway (CTG), IMS Connect, DRDA, Copybook
+* ERP protocols: SAP—RFC/Jco, Idoc/Jco
+* Database protocols: JDBC
+* Financial protocols: SWIFT, EDI/X12
+* Proprietary: TCP (Raw Socket), Java™, Scriptable (JSR-223 compliant), Request Manager, (Data-desensitizer)
+
+<br>
 
 ![image](https://user-images.githubusercontent.com/100637276/161158468-0765d7e2-b41e-4d1d-9c53-4d165b128734.png)
 
 <br>
+
+#### Creation and Utilization of Virtual Services in DevTest
+
+The DevTest portal enables users to create API tests quickly and easily—either by entering the data or by pasting it into the test request and response fields. This RR data can also be imported in bulk from one or more request-response file pairs, and then edited in the portal.
+
+<br>
+
+![image](https://user-images.githubusercontent.com/100637276/161164260-e9094a0f-3f7b-41b4-832c-43a3c9d416d0.png)
+
+<br>
+
 
 ## 8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
 
