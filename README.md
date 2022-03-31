@@ -202,9 +202,10 @@ Service Virtualization, on the other hand, can emulate the full implementation o
 In the micro service world with complex applications, Service Virtualization is the go to solution but comes with a cost, complexity and hard to find skilled resources
 
 <br>
+
 ![image](https://user-images.githubusercontent.com/100637276/161148990-1043a444-fdf6-4e8b-a0d1-29bdc7c1432a.png)
 
-   
+  
 <br>
 <br>
 
@@ -290,13 +291,23 @@ The choice of * full fledged licensed Service Virtualization tool is Broadcom De
 
 ## 7. More insights on Broadcom DevTest 
 
+<br>
+
+![image](https://user-images.githubusercontent.com/100637276/161149217-a3a2f781-7c52-4cd5-86e1-bc0ca15d516b.png)
+
+<br>
+
 ## 8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
 
 <br>
 <br>
 
-
 ![image](https://user-images.githubusercontent.com/100637276/160154772-8957b7b3-72a6-4998-a0ba-372106eb513e.png)
+
+<br>
+<br>
+
+![image](https://user-images.githubusercontent.com/100637276/161151292-1e44f49e-e72b-4cab-99d3-f8c39ec89d37.png)
 
 <br>
 <br>
