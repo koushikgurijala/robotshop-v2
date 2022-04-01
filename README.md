@@ -1,21 +1,28 @@
+## Continuous Testing Vision (Triangulum Project - Service Virtualization)
+
+[![N|Solid](https://images.ctfassets.net/fikanzmkdlqn/5NoHRB1q6lrNzSSpekhrG5/cf22f3d7d9e82aed5e79659800458b57/TELUS_TAGLINE_HORIZONTAL_EN.svg)](https://www.telus.com/en/)
+
 ![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
-- [Continuous Testing Vision (Triangulum Project)](#continuous-testing-vision--triangulum-project)
-  * [1. What Is Continuous Testing Vision (CTV)](#1-what-is-continuous-testing-vision-ctv)
-      - [1.1 Need for Shift Left testing approach](#11-need-for-shift-left-testing-approach)
-  * [2. How Does CTV Help In Engineering Productivity](#2-how-does-ctv-help-in-engineering-productivity)
-  * [3. What Is a Test Double](#3-what-is-a-test-double)
-    + [3.1 What is a Stub](#31-what-is-a-stub)
-    + [3.2 What is a Mock](#32-what-is-a-mock)
-    + [3.3 Difference Between a Stub and a Mock](#33-difference-between-a-stub-and-a-mock)
-    + [3.4 Demsifying the Internals of Stubbing and Mocking](#34-demsifying-the-internals-of-stubbing-and-mocking)
-    + [3.5 What is Service Virtualization](#35-what-is-service-virtualization)
-  * [4. Brief Comparision between Stubs Mocks and Virtual Services](#4-brief-comparision-between-stubs-mocks-and-virtual-services)
-  * [5. Brief Comparision of various Mocking and Service Virtualization Tools](#5-brief-comparision-of-various-mocking-and-service-virtualization-tools)
-  * [6. Choice of Tools for CTV SV Project Implementation](#6-choice-of-tools-for-ctv-sv-project-implementation)
-  * [7. More insights on Broadcom DevTest](#7-more-insights-on-broadcom-devtest)
-  * [8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito](#8-pipeline-method-1---devops-pipleline-as-code-for-mocking-using-mockito)
+
+### Table of Contents
+
+1. [What Is Continuous Testing Vision (CTV)](#what-is-continuous-testing-vision-ctv) 
+   + [1.1 Need for Shift Left testing approach](#need-for-shift-left-testing-approach)
+2. [How Does CTV Help In Engineering Productivity](#how-does-ctv-help-in-engineering-productivity)
+3. [What Is a Test Double](#what-is-a-test-double)
+   + [3.1 What is a Stub](#what-is-a-stub)
+   + [3.2 What is a Mock](#what-is-a-mock)
+   + [3.3 Difference Between a Stub and a Mock](#difference-between-a-stub-and-a-mock)
+   + [3.4 Demsifying the Internals of Stubbing and Mocking](#demsifying-the-internals-of-stubbing-and-mocking)
+   + [3.5 What is Service Virtualization](#what-is-service-virtualization)
+4. [Brief Comparision between Stubs Mocks and Virtual Services](#brief-comparision-between-stubs-mocks-and-virtual-services)
+5. [Brief Comparision of various Mocking and Service Virtualization Tools](#brief-comparision-of-various-mocking-and-service-virtualization-tools)
+6. [Choice of Tools for CTV SV Project Implementation](#choice-of-tools-for-ctv-sv-project-implementation)
+7. [More insights on Broadcom DevTest](#more-insights-on-broadcom-devtest)
+8. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
+ 
 
 
 # Continuous Testing Vision (Triangulum Project)
