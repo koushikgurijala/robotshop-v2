@@ -8,7 +8,7 @@
   * [3. What Is a Test Double](#3-what-is-a-test-double)
     + [3.1 What is a Stub](#31-what-is-a-stub)
     + [3.2 What is a Mock](#32-what-is-a-mock)
-    + [3.3 Difference between a Stub and a Mock](#33-difference-between-a-stub-and-a-mock)
+    + [3.3 Difference Between a Stub and a Mock](#33-difference-between-a-stub-and-a-mock)
     + [3.4 Demsifying the Internals of Stubbing and Mocking](#34-demsifying-the-internals-of-stubbing-and-mocking)
     + [3.5 What is Service Virtualization](#35-what-is-service-virtualization)
   * [4. Brief Comparision between Stubs Mocks and Virtual Services](#4-brief-comparision-between-stubs-mocks-and-virtual-services)
