@@ -1,39 +1,37 @@
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
+
+
 ## Continuous Testing Vision (Triangulum Project - Service Virtualization)
 
 [![N|Solid](https://images.ctfassets.net/fikanzmkdlqn/5NoHRB1q6lrNzSSpekhrG5/cf22f3d7d9e82aed5e79659800458b57/TELUS_TAGLINE_HORIZONTAL_EN.svg)](https://www.telus.com/en/)
-
-![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/telus/triangulum-ctv-stansRobotShop?display_name=release&include_prereleases)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/telus/triangulum-ctv-stansRobotShop/main.yaml/master?)
 
 
 ### Table of Contents
 
 1. [What Is Continuous Testing Vision (CTV)](#what-is-continuous-testing-vision-ctv) 
-   + [1.1 Need for Shift Left testing approach](#need-for-shift-left-testing-approach)
+   + [Need for Shift Left testing approach](#need-for-shift-left-testing-approach)
 2. [How Does CTV Help In Engineering Productivity](#how-does-ctv-help-in-engineering-productivity)
 3. [What Is a Test Double](#what-is-a-test-double)
-   + [3.1 What is a Stub](#what-is-a-stub)
-   + [3.2 What is a Mock](#what-is-a-mock)
-   + [3.3 Difference Between a Stub and a Mock](#difference-between-a-stub-and-a-mock)
-   + [3.4 Demsifying the Internals of Stubbing and Mocking](#demsifying-the-internals-of-stubbing-and-mocking)
-   + [3.5 What is Service Virtualization](#what-is-service-virtualization)
+   + [What is a Stub](#what-is-a-stub)
+   + [What is a Mock](#what-is-a-mock)
+   + [Difference Between a Stub and a Mock](#difference-between-a-stub-and-a-mock)
+   + [Demsifying the Internals of Stubbing and Mocking](#demsifying-the-internals-of-stubbing-and-mocking)
+   + [What is Service Virtualization](#what-is-service-virtualization)
 4. [Brief Comparision between Stubs Mocks and Virtual Services](#brief-comparision-between-stubs-mocks-and-virtual-services)
 5. [Brief Comparision of various Mocking and Service Virtualization Tools](#brief-comparision-of-various-mocking-and-service-virtualization-tools)
 6. [Choice of Tools for CTV SV Project Implementation](#choice-of-tools-for-ctv-sv-project-implementation)
 7. [More insights on Broadcom DevTest](#more-insights-on-broadcom-devtest)
 8. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
  
-
-
-# Continuous Testing Vision (Triangulum Project)
-<br>
 <br>
 
-## 1. What Is Continuous Testing Vision (CTV)
+
+## What Is Continuous Testing Vision (CTV)
 
 To embrace the massive organizational shift in releasing quality and reliable software to the end users at a faster pace embracing the full potential of agile methodologies, It is mandatory to build a strong Continuous Testing pipeline to achieve Shift Left testing.
 
-#### 1.1 Need for Shift Left testing approach:
+#### Need for Shift Left testing approach:
 
 Shift-left testing is important because it helps to prevent the following types of harm due to late testing:
 
@@ -51,7 +49,7 @@ Below image highlights our goal of building continuous testing with shift-left a
 
 :memo: Note: The master and feature branch illustrated in the above image is for information purpose and doesn't bias towards any branching strategy
 
-## 2. How Does CTV Help In Engineering Productivity
+## How Does CTV Help In Engineering Productivity
 Continuous Testing Vision is all about integrating various testing methodologies in the Release pipeline to acheive the goals of 
 1. Decreasing the Lead Time for Changes (to One Day)
 2. Increasing the Deployment Frequency (Multiple Deployments Per Day)
@@ -59,7 +57,7 @@ Continuous Testing Vision is all about integrating various testing methodologies
 
 ![image](https://user-images.githubusercontent.com/100637276/159636455-73b114a2-b2e0-40b8-a619-8d1e3bcdc3b8.png)
 
-## 3. What Is a Test Double ?
+## What Is a Test Double
 
 In automated testing usage of objects that look and behave like their production equivalents, but are actually simplified is a Test Double. This reduces complexity, allows to verify code independently from the rest of the system and sometimes it is even necessary to execute self validating tests at all. A Test Double is a generic term used for these objects.
 
@@ -75,7 +73,7 @@ Majorly used types of Test Doubles
 
 <br>
 
-### 3.1 What is a Stub ?
+### What is a Stub
 
 Stub provides hard-coded answers to calls done during the test. It’s an object, in most cases, responding only to what was programmed in for test purposes, nothing else. We can say that stub overrides methods and returns needed for test values. The purpose of a stub is to prepare a specific state of your system under the test.
 
@@ -85,15 +83,15 @@ Let us take an example of a game under development with Play, Exit, Up, and Down
 When game development is in progress, we have to verify user interfaces (Play, Exit, Up, and Down arrows), we shall implement some dummy actions. For example, on clicking on the Play button, a dummy action shall take place. Additionally, we can do the implementations as shown below:
 
 
-### 3.2 What is a Mock ?
+### What is a Mock
 
 Mock is a part of your test that you have to set up with expectations. It’s an object pre-programmed with expectations about calls it’s expected to receive. The purpose of a mock is to make assertions about how the system will interact with the dependency. In other words, mock verify the interactions between objects. So, you don’t expect that mock return some value (like in the case of stub object), but to check that specific method was called.
 
-### 3.3 Difference between a Stub and a Mock ?
+### Difference between a Stub and a Mock
 
 A stub is an object that returns a hard-coded answer. So it represents a specific state of the real object. Mock, on the other hand, verifies if a specific method was called. It’s testing the behavior besides returning data to the question or call. The idea is stub returns hardcoded data to the question or call and mock verifies if the question or call was made with data response.
 
-## 3.4 Demsifying the Internals of Stubbing and Mocking
+## Demsifying the Internals of Stubbing and Mocking
 
 In our example application, we have a class that reads a customer from the database and forms their full name.
 <br>
@@ -200,11 +198,11 @@ But when it comes to a system or class which has two or more external dependenci
 * 📢 Stubbing only does **state testing** and doesn't support **interaction testing** while mocking does.
 
 
-### 3.5 What is Service Virtualization ?
+### What is Service Virtualization
 
 Challenges with mocking are, Mocking functions focus on very specific scenarios and contexts  and simulate behavioral responses to fulfill a certain development need. This can be very useful for isolating a specific component from the rest of the application and for performing unit tests. In general, mocking is a static implementation and state-less (responses do not have contextual information), and requires 100% manual configuration. Developers/testers must go through the arduous act of creating new interfaces for each use case. Mocks are not re-usable, not flexible and tough to automate. Mocking is not very robust, and ultimately a simplistic approach that can waste a lot of time.
 
-Service Virtualization, on the other hand, can emulate the full implementation of the service and provides a more realistic, fully functioning simulated environment that is more robust than just mocking. For example, API virtualization provides you with the capability of quickly recording virtual API responses. These responses can then be used to create other scenarios by linking them to a dataset. Virtualization tools also allow developers to switch between a virtual environment and real asset, and test under a variety of conditions. Furthermore, Virtualization can help you do load tests, performance tests, failure tests, security tests, evaluate integrations, and more.  Components can be used throughout production and testing environments, especially early in the software development lifecycle. Another benefit is that these tests can also be automated. * Mocking simulates individual classes while service virtualization can simulate the entire network of services.
+Service Virtualization, on the other hand, can emulate the full implementation of the service and provides a more realistic, fully functioning simulated environment that is more robust than just mocking. For example, API virtualization provides you with the capability of quickly recording virtual API responses. These responses can then be used to create other scenarios by linking them to a dataset. Virtualization tools also allow developers to switch between a virtual environment and real asset, and test under a variety of conditions. Furthermore, Virtualization can help you do load tests, performance tests, failure tests, security tests, evaluate integrations, and more.  Components can be used throughout production and testing environments, especially early in the software development lifecycle. Another benefit is that these tests can also be automated. ** Mocking simulates individual classes while service virtualization can simulate the entire network of services.**
 
 In the micro service world with complex applications, Service Virtualization is the go to solution but comes with a cost, complexity and hard to find skilled resources
 
@@ -214,9 +212,9 @@ In the micro service world with complex applications, Service Virtualization is 
 
   
 <br>
-<br>
 
-## 4. Brief Comparision between Stubs, Mocks and Virtual Services
+
+## Brief Comparision between Stubs, Mocks and Virtual Services
 
 <br>
 <br>
@@ -240,7 +238,7 @@ In the micro service world with complex applications, Service Virtualization is 
 <br>
 <br>
 
-## 5. Brief Comparision of various Mocking and Service Virtualization Tools
+## Brief Comparision of various Mocking and Service Virtualization Tools
 <br>
 
 📝Below image illustrates the difference between a Stub, Mock and a Virtual Service
@@ -252,7 +250,7 @@ In the micro service world with complex applications, Service Virtualization is 
 After a thorough research of various available open source and paid tools, considering the wider open source community, wider adaption, extended support for languages and the problems they solve besides compliance with multiple frameworks, the below list of tools are identified for implementation of Continuous Testing Vision
 
 <br>
-<br>
+
 
 | **Mockito**                                                                                                    | **WireMock**                                                              | **BlazeMeter Mock Services**                                                                         | **DevTest**                                                                                             |
 |----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
@@ -263,13 +261,12 @@ After a thorough research of various available open source and paid tools, consi
 | Support for all Object<br>Oriented Languages (Java, PHP) and<br>Python, Flex, JavaScript, Scala,<br>TypeScript | Supports HTTP based API calls                                             | Supports HTTP(S) only as of now.<br>BlazeMeter can integrate with <br>Broadcom's DevTest             | Supports 30+ Protocols                                                                                  |
 
 <br>
-<br>
 
-## 6. Choice of Tools for CTV - SV Project Implementation
+## Choice of Tools for CTV SV Project Implementation
 
 After a thorough research of the available mocking tools, 
 
-The choice of * Mocking framework is Mockito for the following reasons
+The choice of **Mocking framework is Mockito** for the following reasons:
 
 * Simple, Clean API
 * Large Community support
@@ -279,7 +276,7 @@ The choice of * Mocking framework is Mockito for the following reasons
 * Approximately 80% of the DevTeams who work with OOPS languages already use Mockito for their Unit Testing.
 * Supported languages (native and through extensions): Java, Python, Flex, Javascript, Scala, Perl, Objective C, Perl, PHP, TypeScript
 
-The choice of * basic open source Service Virtualization tools is Wiremock for the following reasons
+The choice of **basic open source Service Virtualization tools is Wiremock** for the following reasons:
 
 * Has both fluent expressions (DSL) & configuration using Json
 * Easy to write with extensive options of methods to perform,validate,extend a stub.
@@ -287,7 +284,7 @@ The choice of * basic open source Service Virtualization tools is Wiremock for t
 * Documentation is quite good & most liked github project.
 * Dockerized versions of WireMock is available to spwan up ephimeral containers
 
-The choice of * full fledged licensed Service Virtualization tool is Broadcom DevTest for the following reasons:
+The choice of **full fledged licensed Service Virtualization tool is Broadcom DevTest** for the following reasons:
 
 * Full stack API testing
 * Component-level performance testing
@@ -296,7 +293,7 @@ The choice of * full fledged licensed Service Virtualization tool is Broadcom De
 * Widest multiprotocl support for DevTest Available
 * Supports dynamic strings and data support with random test data
 
-## 7. More insights on Broadcom DevTest 
+## More insights on Broadcom DevTest 
 
 <p>With Broadcom DevTest, we can achieve </p>
 
@@ -358,7 +355,7 @@ The DevTest portal enables users to create API tests quickly and easily—either
 <br>
 
 
-## 8. Pipeline Method 1 - DevOps Pipleline as Code for Mocking using Mockito
+## DevOps Pipeline as Code Implementation
 
 <br>
 
