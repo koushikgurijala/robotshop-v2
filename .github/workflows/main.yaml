@@ -2,6 +2,13 @@ name: CI
 
 on:
   workflow_call:
+    inputs:
+      pull_request_number:
+        required: true
+        type: string
+      pull_request_number_1:
+        required: true
+        type: string
   push:
     branches: [ master ]
     paths-ignore:
@@ -39,7 +46,10 @@ jobs:
         if: always()
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo "$RUNNER_CONTEXT"
+        run: |
+          echo "$RUNNER_CONTEXT"
+          echo "$pull_request_number"
+          echo "$pull_request_number_1"
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -53,13 +63,13 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build Docker Images
-        id: docker-builder
-        run: |
-          echo "-----Building Docker Images-----"
-          docker-compose -f docker-compose.yaml build
+ #     - name: Build Docker Images
+ #       id: docker-builder
+ #       run: |
+ #         echo "-----Building Docker Images-----"
+ #         docker-compose -f docker-compose.yaml build
       
-      - name: List Docker Images
-        run: | 
-          echo ${{ steps.docker-builder.outputs.name }}
-          docker images ls
+ #     - name: List Docker Images
+ #       run: | 
+ #         echo ${{ steps.docker-builder.outputs.name }}
+ #         docker images ls
