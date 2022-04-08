@@ -48,7 +48,7 @@ jobs:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: |
           echo "$RUNNER_CONTEXT"
-          echo "{{ inputs.$pull_request_number_1 }"
+          echo "${{ inputs.pull_request_number_1 }"
 
       - name: Checkout
         uses: actions/checkout@v2
