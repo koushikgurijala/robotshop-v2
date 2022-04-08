@@ -3,9 +3,9 @@ name: CI
 on:
   workflow_call:
     inputs:
-      pull_request_number:
-        required: true
-        type: string
+      #pull_request_number:
+      #  required: true
+      #  type: string
       pull_request_number_1:
         required: true
         type: string
