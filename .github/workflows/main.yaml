@@ -48,10 +48,7 @@ jobs:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: |
           echo "$RUNNER_CONTEXT"
-          echo "{{ $pull_request_number_1 }"
-          echo "$pull_request_number_1"
-          echo "{{ env.pull_request_number_1 }}"
-          echo "{{ GITHUB.pull_request_number_1 }}"
+          echo "{{ inputs.$pull_request_number_1 }"
 
       - name: Checkout
         uses: actions/checkout@v2
