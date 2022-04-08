@@ -49,14 +49,18 @@ jobs:
         run: |
           echo "$RUNNER_CONTEXT"
           echo "${{ inputs.pull_request_number_1 }}"
+          echo "Current Path is: `pwd`"
           touch abc.txt
           touch xyz.txt
           
+      - name: Checkout
+        uses: actions/checkout@v2
+        
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: .
+          path: ./*.json.zip
 
   #    - name: Checkout
   #      uses: actions/checkout@v2
