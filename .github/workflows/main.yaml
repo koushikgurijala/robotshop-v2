@@ -27,7 +27,6 @@ jobs:
   docker:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-
     steps:
       - name: Dump GitHub context
         env:
@@ -52,10 +51,8 @@ jobs:
           echo "Current Path is: `pwd`"
           touch abc.txt
           touch xyz.txt
-          
       - name: Checkout
         uses: actions/checkout@v2
-        
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
