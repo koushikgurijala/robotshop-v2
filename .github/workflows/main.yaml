@@ -24,9 +24,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  some-docker-job:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.runner_context.outputs.pathwd }}
     steps:
       - name: Dump GitHub context
         env:
@@ -42,13 +44,14 @@ jobs:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: echo "$STEPS_CONTEXT"
       - name: Dump runner context
+        id: runner-context
         if: always()
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: |
           echo "$RUNNER_CONTEXT"
           echo "${{ inputs.pull_request_number_1 }}"
-          echo "Current Path is: `pwd`"
+          echo "::set-output name=pathwd::`pwd`"
           touch abc.txt
           touch xyz.txt
       - name: Checkout
