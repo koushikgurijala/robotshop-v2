@@ -435,7 +435,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          files: "shipping/target/surefire-reports/*.xml"
+          files: "shipping/target/surefire-reports/junitreports/*.xml"
        
       - name: Build-and-push-to-GAR
         run: |
