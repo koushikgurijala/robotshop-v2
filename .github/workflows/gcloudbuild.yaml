@@ -118,11 +118,11 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd mockitoApp
-            mvn -e -B deploy \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=cdo-triangulum-ctv \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            versions:set -DnewVersion=1.0.${{ github.event.pull_request.number }}
+          mvn versions:set -DnewVersion=1.0.${{ github.event.pull_request.number }}
+          mvn deploy \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=cdo-triangulum-ctv \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
         
       - name: Build and analyze on Push
         env:
@@ -132,11 +132,11 @@ jobs:
         if: github.event_name == 'push'
         run: |
           cd mockitoApp
-          mvn -e -B deploy \
+          mvn versions:set -DnewVersion=1.0.${GITHUB_SHAR::5}.SNAPSHOT
+          mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          versions:set -DnewVersion=1.0.${GITHUB_SHAR::5}.SNAPSHOT
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
       - name: Jacoco Report
         id: jacoco
