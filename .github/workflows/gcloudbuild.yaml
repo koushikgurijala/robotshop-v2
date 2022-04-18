@@ -133,10 +133,12 @@ jobs:
         run: |
           cd mockitoApp
           mvn versions:set -DnewVersion=1.0.${GITHUB_SHAR::5}.SNAPSHOT
+          echo "Current Path is $PWD"
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          echo "List of files are folders generated are `ls -lR`
 
       - name: Jacoco Report
         id: jacoco
