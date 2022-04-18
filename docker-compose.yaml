@@ -3,130 +3,149 @@ services:
   mongodb:
     build:
       context: mongo
-    image: rs-mongodb
+    image: ${REPO}/rs-mongodb:${TAG}
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging: &logging
+      driver: "json-file"
+      options:
+        max-size: "25m"
+        max-file: "2"
   redis:
-    image: redis:4.0.6
+    image: redis:6.2-alpine
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging:
+      <<: *logging
   rabbitmq:
-    image: rabbitmq:3.7-management-alpine
+    image: rabbitmq:3.8-management-alpine
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging:
+      <<: *logging
   catalogue:
     build:
       context: catalogue
-    image: rs-catalogue
+    image: ${REPO}/rs-catalogue:${TAG}
     depends_on:
       - mongodb
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    logging:
+      <<: *logging
   user:
     build:
       context: user
-    image: rs-user
+    image: ${REPO}/rs-user:${TAG}
     depends_on:
       - mongodb
       - redis
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    logging:
+      <<: *logging
   cart:
     build:
       context: cart
-    image: rs-cart
+    image: ${REPO}/rs-cart:${TAG}
     depends_on:
       - redis
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    logging:
+      <<: *logging
   mysql:
     build:
       context: mysql
-    image: rs-mysql-db
+    image: ${REPO}/rs-mysql-db:${TAG}
     cap_add:
       - NET_ADMIN
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging:
+      <<: *logging
   shipping:
     build:
       context: shipping
-    image: rs-shipping
+    image: ${REPO}/rs-shipping:${TAG}
     depends_on:
       - mysql
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    logging:
+      <<: *logging
   ratings:
     build:
       context: ratings
-    image: rs-ratings
+    image: ${REPO}/rs-ratings:${TAG}
+    environment:
+      APP_ENV: prod
     networks:
       - robot-shop
     depends_on:
       - mysql
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost/_health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    logging:
+      <<: *logging
   payment:
     build:
       context: payment
-    image: rs-payment
+    image: ${REPO}/rs-payment:${TAG}
     depends_on:
       - rabbitmq
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    # Uncomment to change payment gateway
+    #environment:
+      #PAYMENT_GATEWAY: "https://www.worldpay.com"
+    logging:
+      <<: *logging
   dispatch:
     build:
       context: dispatch
-    image: rs-dispatch
+    image: ${REPO}/rs-dispatch:${TAG}
     depends_on:
       - rabbitmq
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging:
+      <<: *logging
   web:
     build:
       context: web
-    image: rs-web
+      args:
+        # agent key to download tracing libs
+        KEY: ${INSTANA_AGENT_KEY}
+    image: ${REPO}/rs-web:${TAG}
     depends_on:
       - catalogue
       - user
@@ -136,13 +155,17 @@ services:
       - "8080:8080"
     networks:
       - robot-shop
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-H", "X-INSTANA-SYNTHETIC: 1", "-f", "http://localhost:8080/" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
     # Uncomment to enable Instana EUM
     # environment:
-      # INSTANA_EUM_KEY: <your eum key here>
+      # INSTANA_EUM_KEY: <your eum key>
+      # INSTANA_EUM_REPORTING_URL: <your reporting url>
+    logging:
+      <<: *logging
 
 networks:
   robot-shop:

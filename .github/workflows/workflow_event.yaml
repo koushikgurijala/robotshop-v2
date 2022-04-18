@@ -1,0 +1,8 @@
+name: Workflow Trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  workflow-trigger:
+    uses: koushikgurijala/sandbox/.github/workflows/main.yaml@main

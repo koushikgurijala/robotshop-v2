@@ -1,17 +1,10 @@
-FROM golang:1.9.2
+FROM golang:1.17
 
-ENV DEP_URL="https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64"
-ENV GOPATH=/go
+WORKDIR /go/src/app
 
-COPY src/ /go/src/github.com/instana/dispatch
+COPY *.go .
 
-WORKDIR /go/src/github.com/instana/dispatch
+RUN go mod init dispatch && go get
+RUN go install
 
-RUN curl -fsSL -o /usr/local/bin/dep ${DEP_URL} && \
-	chmod +x /usr/local/bin/dep && \
-    dep ensure && \
-    go build -o bin/gorcv
-
-# @todo stage this build
-
-CMD bin/gorcv
+CMD dispatch

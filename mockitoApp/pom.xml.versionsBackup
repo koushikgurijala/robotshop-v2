@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mockitodemo</groupId>
+	<artifactId>mockito-app</artifactId>
+	<version>1.0.9</version>
+	<name>Mockito Demo App</name>
+	<description>A project for mockito</description>
+
+	<properties>
+ 		<maven.compiler.source>17</maven.compiler.source>
+ 		<maven.compiler.target>17</maven.compiler.target>
+		<sonar.host.url>https://sonarqube.cloudapps.telus.com</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>
+    			target/site/jacoco-aggregate/jacoco.xml
+  		</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>1.0.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<executions>
+					<execution>					    
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+  				<groupId>org.sonarsource.scanner.maven</groupId>
+  				<artifactId>sonar-maven-plugin</artifactId>
+ 				 <version>3.7.0.1746</version>
+			</plugin>
+		</plugins>
+		<extensions>
+      			<extension>
+        			<groupId>com.google.cloud.artifactregistry</groupId>
+        			<artifactId>artifactregistry-maven-wagon</artifactId>
+        			<version>2.1.0</version>
+      			</extension>
+   		</extensions>
+	</build>
+  	
+	<distributionManagement>
+    	 <snapshotRepository>
+      		<id>artifact-registry</id>
+      			<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
+    	 </snapshotRepository>
+    	<repository>
+      		<id>artifact-registry</id>
+      		<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
+    	</repository>
+  	</distributionManagement>
+
+  	<repositories>
+    	<repository>
+      	<id>artifact-registry</id>
+      		<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
+      	<releases>
+        <enabled>true</enabled>
+      	</releases>
+      	<snapshots>
+        	<enabled>true</enabled>
+      	</snapshots>
+    	</repository>
+  	</repositories>
+
+</project>
+  
