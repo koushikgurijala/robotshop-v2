@@ -125,9 +125,7 @@ jobs:
           SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
         if: github.event_name == 'push'
         run: |
-          echo "Current Path is $PWD"
-          echo "List of files are folders generated are:"
-          ls -lR
+          cd mockitoApp
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
