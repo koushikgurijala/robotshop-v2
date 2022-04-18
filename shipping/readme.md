@@ -226,20 +226,10 @@ jobs:
 
 📊 Results of JUnit Tests - Test Coverage
 
-![image](https://user-images.githubusercontent.com/100637276/163735219-d7f98e0b-58be-42bc-8b9c-4eb73b972ab5.png)
+![image](https://user-images.githubusercontent.com/100637276/163826587-09c71f43-ffe2-400c-afac-3a9b82932c45.png)
 
 <br>
 
-📊 Results of JaCoCo - Code Coverage
-
-![image](https://user-images.githubusercontent.com/100637276/163735228-964981f1-3d79-4ed2-ba03-43af3972c80e.png)
-
-<br>
-
-📊 Results from SonarQube - Overall Code Quality Analysis
-![image](https://user-images.githubusercontent.com/100637276/163735245-71bdde0e-80c4-40c3-b8ae-10a74c68676a.png)
-
-<br>
 
 These reports in the PR comments helps teams to take informed decisions on the code and increases overall engineering productivity
 
