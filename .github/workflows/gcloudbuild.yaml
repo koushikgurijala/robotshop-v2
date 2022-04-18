@@ -1,7 +1,7 @@
 name: GCloud Build
 on:
   push:
-    branches: [ dev-branch-1 ]
+    branches: [ main ]
     # - '.github/workflows/*yaml'
     paths-ignore:
       - '**.md'
