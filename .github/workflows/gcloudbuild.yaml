@@ -1,7 +1,7 @@
 name: GCloud Build
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     # - '.github/workflows/*yaml'
     paths-ignore:
       - '**.md'
@@ -48,6 +48,7 @@ jobs:
       mockitoapp: ${{ steps.filter.outputs.mockitoapp}}
         
     steps:
+    - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
