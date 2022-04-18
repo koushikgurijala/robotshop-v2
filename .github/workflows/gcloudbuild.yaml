@@ -1,15 +1,8 @@
 name: GCloud Build
 on:
   push:
-    branches: [main]
-    # - '.github/workflows/*yaml'
-    paths-ignore:
-      - '**.md'
-      - 'readme/**'
   pull_request:
     branches: [main]
-    paths-ignore:
-      - '**.md'
            
   workflow_dispatch:
 
@@ -133,6 +126,8 @@ jobs:
         if: github.event_name == 'push'
         run: |
           echo "Current Path is $PWD"
+          echo "List of files are folders generated are:"
+          ls -lR
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
