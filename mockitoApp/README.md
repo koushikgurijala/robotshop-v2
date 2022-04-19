@@ -31,7 +31,7 @@
 This document details the implementation of Mockito as a Capability
 <br>
 <br>
-![image](https://user-images.githubusercontent.com/100637276/163222841-6ad7a78b-6937-4718-a5ea-f4a661c9cd67.png)
+![image](https://user-images.githubusercontent.com/100637276/163923308-e096256e-92a5-4b45-96a2-d6fe14037e1d.png)
 <br>
 <br>
 <!-- STEP1 -->
@@ -66,8 +66,11 @@ This document details the implementation of Mockito as a Capability
 
 5. **Request Google Cloud COE Team for creation of Google Artifact Registry (This is needed for storing your Build artifacts)**
 * ➡️ Identify a project name, Ex: trianngulum-ctv for this app
-* ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 (if its across multi region, then you dont need this)
+* ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 or multi-region
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). It is maven for this project and name is mockitodemoapp
+* ➡️ Then Create a service principal with write access to Google Artifact Repository
+* ➡️ Go to Keys Section and then download the JSON Key
+* ➡️ Identify a name for the repository and type (maven, gradle, docker etc). 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
@@ -137,7 +140,10 @@ Repositories should be setup in POM.XML under Distribution Management which will
       		<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
     	</repository>
 </distributionManagement>
+
 ```
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
 <!-- STEP3 -->
 <h3 id="step3"> 🔰 STEP 3: GitHub Actions for Mockito Project</h3>
 
@@ -220,6 +226,8 @@ jobs:
         with:
           files: "target/surefire-reports/*.xml"
  ```
+ ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+ 
 <!-- STEP4 -->
 <h3 id="step4"> 🔰 STEP 4: Screenshots of the test results</h3>
 
@@ -242,5 +250,5 @@ jobs:
 
 These reports in the PR comments helps teams to take informed decisions on the code and increases overall engineering productivity
 
-
+![---------------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
