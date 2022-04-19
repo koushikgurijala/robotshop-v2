@@ -32,7 +32,7 @@ Adding an other line
 This document details the implementation of Mockito as a Capability
 <br>
 <br>
-![image](https://user-images.githubusercontent.com/100637276/163222841-6ad7a78b-6937-4718-a5ea-f4a661c9cd67.png)
+![image](https://user-images.githubusercontent.com/100637276/163920565-8163bb98-465b-4a26-ab02-5e9a148e89b2.png)
 <br>
 <br>
 <!-- STEP1 -->
