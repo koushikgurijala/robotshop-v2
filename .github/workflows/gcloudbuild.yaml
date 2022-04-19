@@ -1,6 +1,8 @@
 name: GCloud Build
 on:
   push:
+    branches-ignore:
+      - main
   pull_request:
     branches: [main]
            
@@ -126,7 +128,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           cd mockitoApp
-          mvn versions:set -DnewVersion=1.0.${GITHUB_SHA::5}
+          mvn versions:set -DnewVersion=1.0.SNAPTHOT.$(date +%s)
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
@@ -138,7 +140,7 @@ jobs:
         id: jacoco
         uses: madrapps/jacoco-report@v1.2
         with:
-          paths: mokcitoApp/target/site/jacoco/jacoco.xml
+          paths: mockitoApp/target/site/jacoco/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 40
           min-coverage-changed-files: 60
@@ -409,24 +411,14 @@ jobs:
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
 
-
       - name: Run Wiremock server
-        #uses: docker://wiremock/wiremock:2.33.1 
-        #with:
-        #  args: >-
-        #    --publish: 9999:8080
-        #    --name: wiremock
-        #    --rm
-        #    -it
-
-       
         run: |
           cd shipping
           docker run -d -p 8080:8080 -v $PWD/src/test/resources:/home/wiremock --name wiremock wiremock/wiremock:2.33.1
           docker container inspect wiremock
           echo `docker container port wiremock`
           mvn test
-    # curl -LIs http://localhost:8080
+  
       - name: Publish Wiremock Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()

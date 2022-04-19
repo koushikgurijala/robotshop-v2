@@ -7,7 +7,7 @@
 	<version>1.0.9</version>
 	<name>Mockito Demo App</name>
 	<description>A project for mockito</description>
-	<!-- Adding a Comment and extending it again extending and again extending and again extending-->
+	<!-- Adding a Comment -->
 	<properties>
  		<maven.compiler.source>17</maven.compiler.source>
  		<maven.compiler.target>17</maven.compiler.target>
