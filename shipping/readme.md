@@ -14,7 +14,7 @@
     <li><a href="#proposed-wiremock-integration-plan"> ➤ Proposed WireMock Integration Plan</a></li>
     <li><a href="#overview"> ➤ Overview</a></li>
     <li><a href="#step1"> ➤ Step 1: General Setup Instructions </a></li>
-    <li><a href="#step2"> ➤ Step 2: Maven Setup Instructions for Mockito </a></li>
+    <li><a href="#step2"> ➤ Step 2: Maven Setup Instructions for Wiremock </a></li>
     <li><a href="#step3"> ➤ Step 3: GitHub Actions for WireMock Project </a></li>
     <li><a href="#step4"> ➤ Step 4: Screenshots of the test results </a></li>
     <li><a href="#references"> ➤ References</a></li>
@@ -24,9 +24,9 @@
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 
-## Proposed Mockito Framework Integration Plan
+## Proposed Wiremock Framework Integration Plan
 
-This document details the implementation of Mockito as a Capability
+This document details the implementation of WireMock as a Capability
 <br>
 <br>
 ![image](https://user-images.githubusercontent.com/100637276/163920565-8163bb98-465b-4a26-ab02-5e9a148e89b2.png)
@@ -45,44 +45,28 @@ This document details the implementation of Mockito as a Capability
  * ➡️ Click on Settings Tab ➡️ visit Security ➡️ Secrets ➡️ Actions, then 
  * ➡️ Add a secret and name it **GITHUB_TOKEN**  and in the value field paste the **token** you obtained from the above(1st) step
 
-2. **Request SonarQube Team for access to a new project**
- * Access Request Instructions:
- * Identify a unique name of the project to be created in SonarQube [https://sonarqube.cloudapps.telus.com/] ex: cdo-triangulum-ctv for this app
- * This is where all your reports will be published
- * Also request for mapping your GitHub project in SonarQube [You should give the GitHub Repo Name to SonarQube Admins for mapping Repo with SonarQube Project]
- 
-3. **Once access is obtained to SonarQube ➡️ Go to Your name displayed on the left side Top corner**
- * ➡️ Then Click on My Account
- * ➡️ then go to Security
- * ➡️ Enter a meaningful name for the token ➡️ Click on Generate
- * ➡️ Copy/preserve the token [This is the token that enables authentication of your Github Workflow execution to publish results in SonarQube]
-
-4. **After you obtain SonarQube Token...** 
-* ➡️ Come to your GitHub Repo, Click on Settings Tab, visit Security
-* ➡️ Secrets ➡️ Actions, then 
-* ➡️ Add a secret and name it **SONAR_TOKEN** and in the value field paste the **token** obtained from the above(3rd) step
-
-5. **Request Google Cloud COE Team for creation of Google Artifact Registry (This is needed for storing your Build artifacts)**
+2. **Request Google Cloud COE Team for creation of Google Artifact Registry (This is needed for storing your Build artifacts)**
 * ➡️ Identify a project name, Ex: trianngulum-ctv for this app
 * ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 or multi-region
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). It is docker for this project and name is telus-robot-shop (Image name rs-shipping)
 * ➡️ Then Create a service principal with write access to Google Artifact Repository
 * ➡️ Go to Keys Section and then download the JSON Key
 
-6. 4. **After you obtain GOOGLE CLOUD Service Principal JSON File...** 
+3. **After you obtain GOOGLE CLOUD Service Principal JSON File...** 
 * ➡️ Come to your GitHub Repo, Click on Settings Tab, visit Security
 * ➡️ Secrets ➡️ Actions, then 
-* ➡️ Add a secret and name it **GOOGLE_TOKEN** and in the value field paste the content from downloaded **JSON file** obtained from the above(5th) step
+* ➡️ Add a secret and name it **GOOGLE_TOKEN** and in the value field paste the content from downloaded **JSON file** obtained from the above(2nd) step
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 <!-- STEP2 -->
-<h3 id="step2"> 🔰 STEP 2: Maven Setup Instructions for Mockito</h3>
+<h3 id="step2"> 🔰 STEP 2: Maven Setup Instructions for WireMock</h3>
 
 1. **General Info**
 
-Mockito is a framwork for mocking responses to API calls. Mockito responds to a request using JSON key value pairs. For testing an application, we need JUnit or any other similar testing framwork and mockito framework.
+WireMock is a framework for mocking responses to LIVE API calls made from client (System Under Test SUT) to an other microservice. Wiremock server acts as the mock Service and responds to a request made via HTTP call by returning JSON key value pairs. For testing this application, we need TestNG or any other similar testing framwork with RestAssure and WireMock Server. We have configured WireMock server as a docker which responds to requests made my SUT.
+
 <p>Under Dependencies section in POM.XML, Add the below</p>
 
 ```XML
