@@ -126,6 +126,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           cd mockitoApp
+          mvn versions:set -DnewVersion=1.0.${GITHUB_SHA::5}
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \

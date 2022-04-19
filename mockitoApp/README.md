@@ -5,7 +5,6 @@
  
 <h1 id="heading" align="center"> Mockito Framework Integration with GitHub ACtions </h1>
 
-
 <br>
 
 <h2 id="table-of-contents"> 🔤 Table of Contents</h2>
@@ -68,7 +67,7 @@ This document details the implementation of Mockito as a Capability
 * ➡️ Identify a project name, Ex: trianngulum-ctv for this app
 * ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 or multi-region
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). It is maven for this project and name is mockitodemoapp
-* ➡️ Then Create a service principal with write access to Google Artifact Repository
+* ➡️ Then create a service principal with write access to Google Artifact Repository
 * ➡️ Go to Keys Section and then download the JSON Key
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). 
 
