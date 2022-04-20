@@ -49,14 +49,31 @@ This document details the implementation of WireMock as a Capability
 * ➡️ Identify a project name, Ex: trianngulum-ctv for this app
 * ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 or multi-region
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). It is docker for this project and name is telus-robot-shop (Image name rs-shipping)
+
+
 * ➡️ Then Create a service principal with write access to Google Artifact Repository
 * ➡️ Go to Keys Section and then download the JSON Key
 
-3. **After you obtain GOOGLE CLOUD Service Principal JSON File...** 
-* ➡️ Come to your GitHub Repo, Click on Settings Tab, visit Security
-* ➡️ Secrets ➡️ Actions, then 
-* ➡️ Add a secret and name it **GOOGLE_TOKEN** and in the value field paste the content from downloaded **JSON file** obtained from the above(2nd) step
+3. **Requestiong GCP Managed Identity Provider Id from Google CCOE Team** 
+* GCP Managed Identity Provider is another way of authenticating GitHub actions or any other appliations to Google Cloud Platform (GCP). The only difference between a Service account with a token as secret (Refer https://github.com/telus/triangulum-ctv-telusRobotShop/tree/main/mockitoApp#step1) to using Managed Identity provider is the Service Principal account token is long lived where as Manged Identity provider generated tokens on demand and will expire. Even Managed Identity Provider needs Service Principal account but works as a wrapper to automatically generate and renew the tokens. For more information of setting up Workload Managed Identity Fedration please refer to the link https://github.com/google-github-actions/auth#setup.
+* ➡️ In Telus, you should request CCOE team for a managed identity proivider.
+* ➡️ Pre-requisites for this are a Project Name in GCP, Service Account in GCP mapped with right roles that define access to the necessary access
+* ➡️ Once you obtain the Managed identity provider id , you can directly pass it to the 'google-github-actions/auth@v0' actions as an attribute or setup a GitHub Secret or environment variable and pass it. Below is how we referenced.
 
+``` YAML
+ - name: Enable Authentication and Authorization to GCP Services
+   uses: "google-github-actions/auth@v0"
+   with:
+     workload_identity_provider: "${{ secrets.workload_identity_provider }}"
+     service_account: 'triangulumadmin@triangulum-ctv.iam.gserviceaccount.com'
+     project_id: triangulum-ctv
+     token_format: 'access_token'
+     
+ # Format of Workload/Managed Identity Provider is: 
+   projects/<UniqueID>/locations/global/workloadIdentityPool/<Your Managed Identity Provider Pool Name>/providers/<provider_name>
+   projects/837319743522/locations/global/workloadIdentityPools/triangulum-ctv-mip/providers/ghactions-provider
+   
+ ```
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
