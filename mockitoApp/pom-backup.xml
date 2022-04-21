@@ -14,7 +14,6 @@
 		<sonar.coverage.jacoco.xmlReportPaths>
     			target/site/jacoco-aggregate/jacoco.xml
   		</sonar.coverage.jacoco.xmlReportPaths>
-		<gcp.gar.url>artifactregistry://us-central1-maven.pkg.dev/triangulumctv-lab-7b38ec/mockito-app</gcp.gar.url>
 	</properties>
 	
 	<dependencies>
@@ -88,18 +87,18 @@
 	<distributionManagement>
     	 <snapshotRepository>
       		<id>artifact-registry</id>
-      			<url>${gcp.gar.url}</url>
+      			<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
     	 </snapshotRepository>
     	<repository>
       		<id>artifact-registry</id>
-      		<url>${gcp.gar.url}</url>
+      		<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
     	</repository>
   	</distributionManagement>
 
   	<repositories>
     	<repository>
       	<id>artifact-registry</id>
-      		<url>${gcp.gar.url}</url>
+      		<url>artifactregistry://us-central1-maven.pkg.dev/triangulum-ctv/mockitodemoapp</url>
       	<releases>
         <enabled>true</enabled>
       	</releases>
