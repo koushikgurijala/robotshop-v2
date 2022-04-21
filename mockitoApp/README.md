@@ -126,7 +126,8 @@ Extensions should be setup in POM.XML so Maven will pull out respective Jars for
  </extensions>
 </build>
 ```
-Repositories should be setup in POM.XML under Distribution Management which will tell maven which repo to push the artifacts to
+Repositories should be setup in POM.XML under Distribution Management which will tell maven which repo to push the artifacts to.
+Below is an example of how the URL will look like. Detailed setup instructions can be found here https://cloud.google.com/artifact-registry/docs/java/authentication
 
 ```XML
 <distributionManagement>
@@ -200,7 +201,7 @@ jobs:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_GCP_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
         run: |
           mvn -e -B deploy \

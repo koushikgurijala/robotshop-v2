@@ -109,7 +109,7 @@ jobs:
       - name: Build and analyze on PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_GCP_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
         if: github.event_name == 'pull_request'
         run: |
