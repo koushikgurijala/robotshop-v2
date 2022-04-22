@@ -23,7 +23,20 @@
 6. [Choice of Tools for CTV SV Project Implementation](#choice-of-tools-for-ctv-sv-project-implementation)
 7. [More insights on Broadcom DevTest](#more-insights-on-broadcom-devtest)
 8. [Implementation Guide for Service Virtualization using Broadcom DevTest](#implementation-guide-for-service-virtualization-using-broadcom-devtest)
-9. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
+9. [Shift Left Performance Testing](#Shift-Left-Performance-Testing) 
+   + [Objectives of Shift Left Performance Testing](#Objectives-of-Shift-Left-Performance-Testing)
+   + [Performance Testing Types](#Performance-Testing-Types)
+   + [Performance Testing Phases](#Performance-Testing-Phases)
+   + [Performance Test Tools](#Performance-Test-Tools)
+   + [Performance Testing Framework](#Performance-Testing-Framework)
+   + [Performance Test Setup](#Performance-Test-Setup)
+   + [Creating an Automated Script](#Creating-an-Automated-Script)
+     + [JMeter](#JMeter)
+     + [K6](#K6)
+     + [Gatling](#Gatling)
+     + [Locust](#Locust)
+   + [Setting up Taurus YAML](#Setting-up-Taurus-YAML)
+10. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
  
 <br>
 
@@ -465,6 +478,142 @@ a.	High traffic backend will be given priority over low traction count backend.
 
 4.	Third Party or in-house
 a.	Third party application will be given priority over in house as there can be downtime and cost associated with consumption of third party service.
+
+<br>
+
+## Shift Left Performance Testing
+------------------------------
+*   Shifting performance testing left enables developers and testers to conduct performance testing in the early stages of development cycles 
+*   Increased collaboration between performance testers and the developers. With both teams working together, it will be easy to identify the components to be tested for performance earlier in the development cycle
+*   A shift-left performance testing strategy allows smaller, ad hoc performance tests to be performed by testers against individual components as they are developed.
+*   To accomplish this, teams need to begin creating performance tests along with unit and functional tests, when functionality is implemented, and configure those performance tests to be executed in the pipeline
+*   Usually, KPI’s for performance are defined at the application level. But, defining them for modules and sub-modules will aid in improving the efficiency and performance of the smaller units. Thus, rendering better performance for the application as a whole
+
+### Objectives of Shift Left Performance Testing
+--------------------------------------------
+*   Test Early and Often
+*   Swift delivery of fast and efficient code
+*   Reduction in failure rates and performance issues
+*   Able to verify capacity planning early in the development phase
+*   Delivery of High performing and scalable application
+*   Centralized results and insights
+
+### Performance Testing Types
+--------------------------
+**Single User Test:** Testing with one active user yields the best possible performance, and response times can be used for baseline measurements.
+
+**Baseline Test:** Baseline testing refers to the validation of the documents and specifications on which test cases are designed. Baseline, in general, refers to a benchmark that forms the base of any new creation
+
+**Load Test:**  Load testing is the act of testing a system under varying transactional or user volume amounts. Results will be compared with baselines.
+
+**Peak Load Test:** Understand system behavior under the heaviest anticipated usage for concurrent number of users and transaction rates.
+
+**Isolation Test:**  Component testing of individual components in isolation from surrounding components, with surrounding components being simulated by stubs.  
+
+**Stress Test:** Stress testing is a form of testing that is used to determine the stability of a given system or entity. It involves testing beyond normal operational capacity, often to a breaking point
+
+**Endurance Test:**  Checks for memory leaks or other problems that may occur with prolonged execution. Endurance testing is a better gauge of application availability.
+
+### Performance Testing Phases
+------------------------------------------------
+**1) Performance Assessment (PE, Dev & DevOps)**
+*   Takes place at the same time as planning and estimating items in the backlog
+*   Understand the performance risk of the change
+*   Having a performance mindset to make sure the end product performs as expected
+*   Identify Performance NFRs using a Non-Functional Questionnaire document or application 
+
+**2) Performance Unit Test (PE, Dev, SV & DevOps)**
+* Run a local load test using Taurus container (Virtualized integrations, Automated script and IDE monitoring plugin)
+    *   Integrations to be virtualized
+    *   Automated scripts to be created using any proposed load testing tools
+    *   Load test configurations can be easily modified by developer
+  OR	
+*   Perform timed unit tests to provide estimates of execution time and resource consumption by high-risk code
+    *   Using Performance.now() in JS Apps
+    *   Using [JUnitPerf](https://github.com/noconnor/JUnitPerf) in existing JUnit TCs
+
+**3)	Performance Component Test (PE, Dev, SV & DevOps)**
+*   Load test on Pull request - Branch (Virtualized integrations)
+*   Run component Regression and Progression test cases on ephemeral container
+*   Provide test run time results
+*   Use Failure criteria and monitoring stats to notify test status
+*   Send Test result and pod stats to GitHub issue 
+
+![image](https://user-images.githubusercontent.com/100637276/164766240-a5f8651f-b103-4ee8-814c-277260d51f02.png)
+
+**4)	Performance Integration Test – Staging env. (PE, Dev, DevOps)**
+* Execute Performance tests in an integrated environment with/without mocks/SV 
+* Use the Component Testing script and Regression scripts to test with different configurations (Load, Stress, Endurance)
+* Regression suite is scheduled to executed every EOD to maintain code quality 
+
+![image](https://user-images.githubusercontent.com/100637276/164766306-c7b7b389-ff89-4ca2-a80b-6213d7629fd7.png)
+
+**5)	Performance Integration Test – Prod env. (PE, Dev, DevOps)**
+* Execute Performance tests in Green environment without any mocks/SV
+* Use Component Test script and Regression scripts and test with PR volume – Non Intrusive test cases
+
+![image](https://user-images.githubusercontent.com/100637276/164766378-c4fe12a5-ffea-4ee7-a023-ea700dc4d4a3.png)
+
+### Performance Test Tools
+-----------------------
+**BlazeMeter** is a SaaS-based performance testing tool, fully compatible with JMeter and many other open source load testing tools. Whether you are running automated tests every night as part of your continuous integration workflow, BlazeMeter has the features to make your load testing effective and easy. BlazeMeter’s colorful report make analytics accessible to everyone, so that each developer, engineer, and DevOps professional can clearly understand where to improve their code and system. 
+
+**Taurus** is a free and open source framework for Continuous Testing which helps by hiding the complexities of running performance tests. Think of it as an automation-friendly wrapper - it cloaks nicely around JMeter and various other open source performance testing tools neatly covering all of its complexities and imperfections.
+
+Taurus tool may use different underlying tools as executors for scenarios (Functional and Performance). Currently, supported tools are
+*	JMeter
+*	Selenium
+*	Gatling
+*	Locust
+*	Siege
+*	ApacheBenchmark
+*	Tsung
+*	Molotov
+*	JUnit
+*	TestNG
+*	Apiritif
+*	PyTest
+*	RSpec
+*	Mocha
+*	NUnit
+*	xUnit
+*	WebdriverIO
+*	Robot
+*	Postman/Newman
+*	K6
+*	Vegeta
+
+Widely used Performance testing tools supported by Taurus,
+*	JMeter 
+*	K6
+*	Gatling
+*	Locust
+
+### Performance Testing Framework
+-----------------------------
+[Custom Framework]() (Github, Github Actions, CloudDeploy)
+
+![image](https://user-images.githubusercontent.com/100637276/164766580-af3decd9-407b-4795-babf-12cffbbbc6f9.png)
+
+**Work In Progress**
+
+### Performance Test Setup
+----------------------
+### Creating an Automated Script
+----------------------------
+----------------------------
+*JMeter*
+
+*K6*
+
+*Gatling*
+
+*Locust*
+
+ Creating an Automated Script
+----------------------------
+----------------------------
+
 
 ## DevOps Pipeline as Code Implementation
 
