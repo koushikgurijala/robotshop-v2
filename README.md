@@ -22,7 +22,8 @@
 5. [Brief Comparision of various Mocking and Service Virtualization Tools](#brief-comparision-of-various-mocking-and-service-virtualization-tools)
 6. [Choice of Tools for CTV SV Project Implementation](#choice-of-tools-for-ctv-sv-project-implementation)
 7. [More insights on Broadcom DevTest](#more-insights-on-broadcom-devtest)
-8. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
+8. [Implementation Guide for Service Virtualization using Broadcom DevTest](#implementation-guide-for-service-virtualization-using-broadcom-devtest)
+9. [DevOps Pipeline as Code Implementation](#devops-pipeline-as-code-implementation)
  
 <br>
 
@@ -109,7 +110,7 @@ Below is the code for the customer:
 	}
  
  ```
- <br>
+<br>
 and below is our business class:
 
 ```java
@@ -354,13 +355,132 @@ The DevTest portal enables users to create API tests quickly and easily—either
 
 <br>
 
+## Implementation Guide for Service Virtualization using Broadcom DevTest
+
+Onboarding Virtual Service
+This document covers how to identify backend for virtualization, requirements for virtualization, assumptions, limitations and prioritization related to backend virtualization. 
+
+
+
+Identification and technical requirements gathering for virtualizations of backend service:
+
+Below mentioned points helps to identify backend and its behaviour. Also, technical details to be asked from developers/tester and architecture during engagement.
+<br>
+**1.	Engaging developers/testers to understand the architecture of the system and identify bottle necks in the system. Like if there is test data dependency, downtime, consumption cost, integration issue, access issue with the backend.**
+
+![composite_application_example](https://user-images.githubusercontent.com/100874882/164086473-13e5dbf2-6275-4d34-80a5-59e66c009a48.png)
+
+
+**2.	Technical details requirement:**
+
+a.	Transaction flow end to end:
+i.	To identify which layer can be virtualized.
+ii.	How calls flow and if there is dependency between backend.
+
+b.	Data protocol: 
+i.	Format in which data flows between system.
+ii.	For instance: SOAP/XML, JSON etc.
+
+c.	Transport protocol
+i.	Wrapper in which data flows between system.
+ii.	For instance: HTTP/S, JMS, JDBC, LDAP etc.
+
+d.	In-house or third party
+i.	It will help in identify support required and dependency on third party team.
+ii.	Third party integration make require firewalls request raised or permissions to access the system.
+
+e.	Transaction
+i.	What will be the transaction count and testing peak hours?
+ii.	How much delay required to respond to transaction?
+
+f.	Functional or Non-functional testing
+i.	This requirement which help decide behaviour of virtual service.
+ii.	Helps deciding configuration of virtual service, delay etc.
+
+g.	Flow data in form of request/response pairs, Swagger API, recording or traffic log
+i.	Developers/Testers need to share request/response pairs, traffic log to create virtual service.
+ii.	Recording can be performed by placing recorder between systems identified for virtualization.
+
+The following graphics show that when recording the service image, the virtual service environment (VSE) acts as the pass through mechanism between the client and server. While the VSE passes the requests and responses along, it records the transactions.
+
+ **Normal Operations**
+ 
+ ![normal_client_server_operations_diagram](https://user-images.githubusercontent.com/100874882/164087611-a5ed2b96-493a-4549-bfd2-957389ceec94.png)
+
+**Recording 
+
+![image](https://user-images.githubusercontent.com/100874882/164087707-81370b83-4a57-46b6-8e62-68f020692bff.png)
+
+At the time of virtualization, the VSE responds to the client requests by consulting the recorded transactions.
+
+![virtual_service_with_recorded_transactions_diagram](https://user-images.githubusercontent.com/100874882/164087770-54a4e6eb-99f5-4fd9-8119-06f9cdef48e7.png)
+
+
+**Limitations and assumptions to consider while creating virtual service:**
+
+
+a.	Limitations of virtual service
+
+
+i.	It cannot replace actual system for testing.
+
+ii.	Virtual services don’t interact with bottom layer backend.
+
+iii.	Avoid Virtualizing unstable APIs If you are virtualizing an API, you freeze it in time. What happens if the original API in under heavy development and changes every week significantly enough to cause breaking changes on your side? You need integration contract tests, consumer-driven contract tests or manual exploratory tests to make sure the original API has not drifted from the virtualized version. If you cannot afford development of those automated tests or do not have resources to spend time manually testing it you should consider either using the real version of the API or postponing consumption the APIs. You could be working on other parts of the system as a priority and come back to the unstable API once is a bit more stable.
+
+b.	Assumptions
+
+i.	Testing will be done using limit set of scenarios against virtual services.
+
+ii.	Focus on keeping it simple. We have worked in environments where systems have been designed for testability from day 1 and where there was no focus on that. 
+
+What we have found was that creating stateful virtual services or even simulators was sometimes a necessary short-term solution, especially when you are working in an environment where the System Under Test has not been designed for testability. What we have found was that systems not designed for testability often use external APIs in a way that makes them hard to virtualize. 
+We have also been on projects where system testability was part of the design process from the beginning. In those environments, stubbing the external APIs was very simple. The virtual services are almost always stateless and never have any logic. 
+
+
+Always focused on avoiding creating complicated virtual services. That fact that you can simulate a backend system in your virtual service does not mean you should. 
+
+Remember that service virtualization is only a part of the big picture of creating software to deliver business impact. What you want to do is help reduce the costs of software delivery as a whole, not only QA is isolation. 
+
+Create the simplest virtual services possible. If you need to create a stateful or simulator virtual service, communicate well with architects and developers to make sure they know how much effort goes into it. It might be a cheaper long term option to change/refactor the use of the APIs and the APIs themselves to make them more testable and eliminate the need for complex simulation. 
+
+iii.	Remember what is the System Under Test (SUT) when virtualizing a service Your system under test is the group of components or applications you are testing. It defines the set of functionalities you are testing. 
+
+Let us say we are testing a web application connecting to a backend system. The backend system exposes an API for users to log in. After three unsuccessful logins, the backend system will lock the account and start returning an error indicating that the account has been deactivated. If I am testing the web application, I would like to see three messages rendered to the user: a successful login, an unsuccessful login, and an account locked message. It can be done with three stateless responses from a virtual service. Then I would proceed to test the backend system API. I would test that after 3 login attempts I get an account locked message. After, that I would proceed to test both systems in an integration environment, but I would not repeat all the tests. I would only test if I can successfully log in. The number of tests in integration environments should be reduced to a minimum giving enough confidence to proceed to production (more on the testing pyramid by Google). So we had three stages of testing, in the first one the SUT was the web application. In the second one, the SUT was the backend system. In the third one, the SUT was the web application together with the backend system. When the SUT is the web application, it does not make sense to create a stateful virtual service that will return an account locked message after three unsuccessful logins. It would create unnecessary complexity. You have to test that functionality in the backend system anyway, so you know it works. All you test in the web application is whether the messages get rendered correctly.
+
+<img width="980" alt="Before-After-SV" src="https://user-images.githubusercontent.com/100874882/164092130-949b994c-7b12-4c14-9488-0c396b40b7c3.png">
+
+
+**Prioritization of creation of virtual service:**
+Below are few points mentioned which can be in prioritizing virtual service creation:
+1.	Number of operation and test cases to be virtualized 
+a.	Backend with high operation and test cases count will be given priority over low operation count backend.
+
+2.	Test data dependency
+a.	Regression test cases dependant on test data from TDM team will be given high priority as it will remove dependency form TDM team.
+b.	Test data creation may take hours or days or DB refresh after each testing which can be removed by virtualization.
+
+3.	Transaction count
+a.	High traffic backend will be given priority over low traction count backend.
+
+4.	Third Party or in-house
+a.	Third party application will be given priority over in house as there can be downtime and cost associated with consumption of third party service.
 
 ## DevOps Pipeline as Code Implementation
 
 <br>
 
+<p>Mockito Implementation</p>
 
-#### 🙋‍♂️🙋‍♂️🙋‍♂️
+https://github.com/telus/triangulum-ctv-telusRobotShop/tree/main/mockitoApp#readme
+
+<p>Wiremock Implementation</p>
+
+https://github.com/telus/triangulum-ctv-telusRobotShop/tree/main/shipping#readme
+
+<br>
+
+👷👷👷👷
 
 <br>
 <br>
