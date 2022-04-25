@@ -118,7 +118,8 @@ jobs:
           mvn deploy \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=cdo-triangulum-ctv \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+          -Dsonar.scm.forceReloadAll=true
         
       - name: Build and analyze on Push
         env:
@@ -149,6 +150,7 @@ jobs:
         if: always()
         with:
           files: "mockitoApp/target/surefire-reports/*.xml"
+          report_individual_runs: "true"
 
   build-cart:
     name: Building CART IMAGE
