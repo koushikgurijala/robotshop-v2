@@ -2,10 +2,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.mockitodemo</groupId>
+	<groupId>com.telus.ctv</groupId>
 	<artifactId>mockito-app</artifactId>
-	<version>1.0.9</version>
-	<name>Mockito Demo App</name>
+	<version>1.0.0</version>
+	<name>Mockito Reference App</name>
 	<description>A project for mockito</description>
 	<properties>
  		<maven.compiler.source>17</maven.compiler.source>
@@ -73,7 +73,7 @@
 			<plugin>
   				<groupId>org.sonarsource.scanner.maven</groupId>
   				<artifactId>sonar-maven-plugin</artifactId>
- 				 <version>3.7.0.1746</version>
+ 				 <version>3.9.0.2155</version>
 			</plugin>
 		</plugins>
 		<extensions>

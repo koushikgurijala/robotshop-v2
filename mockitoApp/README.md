@@ -63,7 +63,10 @@ This document details the implementation of Mockito as a Capability
 * ➡️ Secrets ➡️ Actions, then 
 * ➡️ Add a secret and name it **SONAR_TOKEN** and in the value field paste the **token** obtained from the above(2nd) step
 
-5. **Request Google Cloud COE Team for creation of Google Artifact Registry (This is needed for storing your Build artifacts)**
+5. **OTHER METHOD FOR SONARQUBE INTEGRATION**
+* ➡️ Please refer https://github.com/telus/security/tree/main/tools/sonarqube#readme for an other method of integrating SONAR with your projects
+
+6. **Request Google Cloud COE Team for creation of Google Artifact Registry (This is needed for storing your Build artifacts)**
 * ➡️ Identify a project name, Ex: trianngulum-ctv for this app
 * ➡️ Identiy a location or obtain the location from the Google Cloud COE ex: us-central1 or multi-region
 * ➡️ Identify a name for the repository and type (maven, gradle, docker etc). It is maven for this project and name is mockitodemoapp
@@ -79,6 +82,9 @@ This document details the implementation of Mockito as a Capability
 1. **General Info**
 
 Mockito is a framwork for mocking responses to API calls. Mockito responds to a request using JSON key value pairs. For testing an application, we need JUnit or any other similar testing framwork and mockito framework.
+
+This project overs Strict Stubbing, Mocking Static Methods, Using Mockito Answers and Mocking Final and Private methods.
+
 <p>Under Dependencies section in POM.XML, Add the below</p>
 
 ```XML
