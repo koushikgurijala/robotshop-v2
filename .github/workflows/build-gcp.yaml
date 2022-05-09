@@ -150,6 +150,9 @@ jobs:
   #         files: "mockitoApp/target/surefire-reports/*.xml"
   #         report_individual_runs: "true"
 
+  # Command to Increment the Version 
+  # find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
+  
   build-cart:
     name: Building CART IMAGE
     needs: changes
@@ -174,19 +177,20 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
       # Build the Docker image
       - name: Build-and-push-to-GAR
-        if: github.event_name == 'pull_request'
+      # if: github.event_name == 'pull_request'
+      # export TAG=`cat VERSION.txt  | awk -F'[.]'  '{
+      #           major=$1;
+      #           minor=$2;
+      #           patch=$3;
+      #           patch += 1;
+      #           minor += patch / 100;
+      #           patch = patch % 100
+      #           major += minor / 10;
+      #           minor = minor % 10;
+      #           printf( "%01d.%01d.%02d\n", major, minor, patch );
+      # }'`
         run: |
-          export TAG=`cat VERSION.txt  | awk -F'[.]'  '{
-                    major=$1;
-                    minor=$2;
-                    patch=$3;
-                    patch += 1;
-                    minor += patch / 100;
-                    patch = patch % 100
-                    major += minor / 10;
-                    minor = minor % 10;
-                    printf( "%01d.%01d.%02d\n", major, minor, patch );
-          }'`
+          export TAG=`cat VERSION.txt``
           echo $TAG
           echo "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
           docker build -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
