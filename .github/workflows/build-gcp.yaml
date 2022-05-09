@@ -188,7 +188,7 @@ jobs:
       #           printf( "%01d.%01d.%02d\n", major, minor, patch );
       # }'`
         run: |
-          export TAG=`cat VERSION.txt`
+          export TAG=`cat cart/VERSION.txt`
           echo $TAG
           echo "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
           docker build -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
