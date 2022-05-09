@@ -1,8 +1,5 @@
 name: GCloud Build
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches: [main]
            
