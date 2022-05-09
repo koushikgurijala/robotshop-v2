@@ -1,9 +1,12 @@
 # Registry and rpository for Docker images
 # Default is docker/robotshop/image:latest
 image:
-  repo: robotshop
-  version: latest
+  repo: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+  version: 1.2.0
   pullPolicy: IfNotPresent
+
+imageCart:
+  version: 1.2.0
 
 # Alternative payment gateway URL
 # Default is https://www.paypal.com
