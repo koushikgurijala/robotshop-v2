@@ -1,0 +1,21 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+# build:
+#     artifacts:
+#       - image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+deploy:
+   helm:
+    releases:
+    - name: dev
+      chartPath: helm
+      namespace: robot-shop
+      createNamespace: true
+      recreatePods: false
+      useHelmSecrets: false
+      artifactOverrides:
+        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+      valuesFiles:
+        - helm/values.yaml
+      imageStrategy:
+        helm: {}
+  
