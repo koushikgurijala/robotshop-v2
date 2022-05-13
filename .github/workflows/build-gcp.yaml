@@ -50,8 +50,7 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       redis: ${{ steps.filter.outputs.redis }}
       rabbitmq: ${{ steps.filter.outputs.rabbitmq }}
-      mockitoapp: ${{ steps.filter.outputs.mockitoapp}}
-        
+              
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2.10.2
@@ -326,6 +325,7 @@ jobs:
           docker build -t "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG" ratings/
           gcloud info
           docker push "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
+  
   build-shipping:
     name: Building SHIPPING IMAGE
     needs: changes
