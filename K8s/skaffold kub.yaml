@@ -1,0 +1,15 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+ name: getting-started-kustomize
+profiles:
+ - name: dev
+   deploy:
+     kubectl:
+       manifests:
+         - helm/values.yaml
+ - name: prod
+   deploy:
+     kubectl:
+       manifests:
+         - helm/values.yaml
