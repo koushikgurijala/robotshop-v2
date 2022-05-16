@@ -544,7 +544,6 @@ jobs:
       - name: Call Google Cloud Deploy
         run: |
           cd K8s
-          env TZ=EST5EDT date
           date_var=`date +%m%d%y-%H%M`
           echo "date_var=$date_var" >> $GITHUB_ENV
           gcloud deploy releases create rel-$date_var --delivery-pipeline=robot-shop-gcp --region=us-central1
@@ -553,9 +552,10 @@ jobs:
         run: |
           sleep 60
           counter=0
+          tty=`tty`
           while [ $counter -lt 20 ]
           do
-          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | tee /dev/tty | grep state: | cut -f2 -d: | cut -d' ' -f2`
+          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | tee $tty | grep state: | cut -f2 -d: | cut -d' ' -f2`
           if [ "$some_val" == "IN_PROGRESS" ]
           then
             echo "Deployment in Progress Time is: `date`"
