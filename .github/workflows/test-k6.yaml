@@ -1,8 +1,8 @@
 name: test-k6-execution
 on:
-  # push:
-  #    branches-ignore:
-  #      - main
+  push:
+    branches-ignore:
+      - main
   workflow_dispatch:
 env:
   GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
@@ -45,7 +45,7 @@ jobs:
       - name: Deploy Cloud Run
         id: deploy-cloudrun
         run: |
-          gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --command "k6 run /scripts/test.js" --region=us-central1
+          gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region=us-central1
 
      #gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"  --region=us-central1
     
