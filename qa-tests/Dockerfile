@@ -2,4 +2,5 @@ FROM loadimpact/k6:latest
 COPY scripts /scripts/
 USER root
 RUN chmod +x -R /scripts
-ENTRYPOINT [ "run", "/scripts/test.js" ]
+CMD [ "ls", "-ltr", "/scripts"]
+ENTRYPOINT [ "k6", "run", "/scripts/test.js" ]
