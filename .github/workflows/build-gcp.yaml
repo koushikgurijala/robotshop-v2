@@ -1,14 +1,14 @@
 name: build-push-gar
 on:
-  push:
-    branches-ignore:
-      - main
-    paths-ignore:
-      - 'DCOS/**'
-      - 'K8s/**'
-      - 'load-gen/**'
-      - 'OpenShift/**'
-      - 'Swarm/**'
+  # push:
+  #   branches-ignore:
+  #     - main
+  #   paths-ignore:
+  #     - 'DCOS/**'
+  #     - 'K8s/**'
+  #     - 'load-gen/**'
+  #     - 'OpenShift/**'
+  #     - 'Swarm/**'
        
   workflow_dispatch:
     paths-ignore:
@@ -615,7 +615,7 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           service: 'k6-test'
-          image: 'us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-k6-image:K6_TAG'
+          image: '$GAR_K6_INFO/rs-k6-image:K6_TAG'
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
