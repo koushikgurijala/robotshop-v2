@@ -4,7 +4,7 @@ on:
      branches-ignore:
        - main
 env:
-  GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
 
 jobs:
   run-performance-tests:
@@ -19,10 +19,14 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_N }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: set K6 image TAG
         run: |
@@ -32,15 +36,15 @@ jobs:
       - name: Build-K6-push-to-GAR
         run: |
           echo $K6_TAG
-          echo "$GAR_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
+          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
           gcloud info
-          docker push "$GAR_INFO"/rs-k6-image:"$K6_TAG"
+          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
       - name: Deploy Cloud Run
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           service: 'k6-test'
-          image: '$GAR_INFO/rs-k6-image:K6_TAG'
+          image: '$GAR_K6_INFO/rs-k6-image:K6_TAG'
 
   

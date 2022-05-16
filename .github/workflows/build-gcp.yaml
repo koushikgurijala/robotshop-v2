@@ -597,6 +597,10 @@ jobs:
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
 
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
       - name: set K6 image TAG
         run: |
           K6_TAG=`cat qa-tests/VERSION.txt`
