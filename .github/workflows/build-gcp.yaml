@@ -577,49 +577,49 @@ jobs:
           counter=$(( $counter + 1))
           done
 
-  run-performance-tests:
-    name: Run Performace Tests using K6
-    needs:
-      - changes
-      - deploy-to-gcp-dev
+  # run-performance-tests:
+  #   name: Run Performace Tests using K6
+  #   needs:
+  #     - changes
+  #     - deploy-to-gcp-dev
  
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                         
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
 
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      - name: set K6 image TAG
-        run: |
-          K6_TAG=`cat qa-tests/VERSION.txt`
-          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+  #     - name: set K6 image TAG
+  #       run: |
+  #         K6_TAG=`cat qa-tests/VERSION.txt`
+  #         echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
 
-      - name: Build-K6-push-to-GAR
-        if: ${{ needs.changes.outputs.qa-tests == 'true' }}
-        run: |
-          echo $K6_TAG
-          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
-          gcloud info
-          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+  #     - name: Build-K6-push-to-GAR
+  #       if: ${{ needs.changes.outputs.qa-tests == 'true' }}
+  #       run: |
+  #         echo $K6_TAG
+  #         echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+  #         docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
+  #         gcloud info
+  #         docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
-      - name: Deploy Cloud Run
-        uses: 'google-github-actions/deploy-cloudrun@v0'
-        with:
-          service: 'k6-test'
-          image: '$GAR_K6_INFO/rs-k6-image:$K6_TAG'
+  #     - name: Deploy Cloud Run
+  #       uses: 'google-github-actions/deploy-cloudrun@v0'
+  #       with:
+  #         service: 'k6-test'
+  #         image: '$GAR_K6_INFO/rs-k6-image:$K6_TAG'
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop

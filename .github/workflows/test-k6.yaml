@@ -1,8 +1,9 @@
 name: test-k6-execution
 on:
-   push:
-     branches-ignore:
-       - main
+  # push:
+  #    branches-ignore:
+  #      - main
+  workflow_dispatch:
 env:
   GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
 
