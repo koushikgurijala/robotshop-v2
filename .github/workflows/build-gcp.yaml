@@ -599,23 +599,23 @@ jobs:
 
       - name: set K6 image TAG
         run: |
-          K6-TAG=`cat qa-tests/VERSION.txt`
-          echo "K6-TAG=$K6-TAG" >> $GITHUB_ENV
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
 
       - name: Build-K6-push-to-GAR
         if: ${{ needs.changes.outputs.qa-tests == 'true' }}
         run: |
-          echo $K6-TAG
-          echo "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG" qa-tests/
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
           gcloud info
-          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG"
+          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
       - name: Deploy Cloud Run
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           service: 'k6-test'
-          image: 'us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-k6-image:K6-TAG'
+          image: 'us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-k6-image:K6_TAG'
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
