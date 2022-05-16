@@ -4,7 +4,7 @@ on:
      branches-ignore:
        - main
 env:
-  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
+  GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
 
 jobs:
   run-performance-tests:
@@ -32,15 +32,15 @@ jobs:
       - name: Build-K6-push-to-GAR
         run: |
           echo $K6_TAG
-          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
+          echo "$GAR_INFO"/rs-k6-image:"$K6_TAG"
+          docker build -t "$GAR_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
           gcloud info
-          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+          docker push "$GAR_INFO"/rs-k6-image:"$K6_TAG"
 
       - name: Deploy Cloud Run
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           service: 'k6-test'
-          image: '$GAR_K6_INFO/rs-k6-image:K6_TAG'
+          image: '$GAR_INFO/rs-k6-image:K6_TAG'
 
   
