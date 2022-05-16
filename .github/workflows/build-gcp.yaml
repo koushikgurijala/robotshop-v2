@@ -20,6 +20,7 @@ on:
 
 env:
   GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
   CART_APP_NAME: rs-cart
   SHIPPING_APP_NAME: rs-shipping
   CATALOGUE_APP_NAME: rs-catalogue
@@ -32,7 +33,7 @@ env:
   WEB_APP_NAME: rs-web
   REDIS_APP_NAME: redis
   RABBITMQ_APP_NAME: rabbitmq
-
+  
 jobs:
   changes:
     name: Track Changes in Services
@@ -50,6 +51,7 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       redis: ${{ steps.filter.outputs.redis }}
       rabbitmq: ${{ steps.filter.outputs.rabbitmq }}
+      qa-tests: ${{ steps.filter.outputs.qa-tests }}
               
     steps:
     - uses: actions/checkout@v3
@@ -61,6 +63,8 @@ jobs:
             - 'cart/**'
           catalogue:
             - 'catalogue/**'
+          qa-tests:
+            - 'qa-tests/**'
           dispatch: 
             - added|deleted|modified: 'dispatch/**'
           mongo:
@@ -488,6 +492,7 @@ jobs:
           docker build -t "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG" redis/
           gcloud info
           docker push "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG"
+  
   build-rabbitmq:
     name: Building RabbitMQ IMAGE
     needs: changes
@@ -550,12 +555,12 @@ jobs:
       
       - name: verify if the rollout is success
         run: |
+          gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1
           sleep 60
           counter=0
-          tty=`tty`
           while [ $counter -lt 20 ]
           do
-          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | tee $tty | grep state: | cut -f2 -d: | cut -d' ' -f2`
+          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | grep state: | cut -f2 -d: | cut -d' ' -f2`
           if [ "$some_val" == "IN_PROGRESS" ]
           then
             echo "Deployment in Progress Time is: `date`"
@@ -571,7 +576,43 @@ jobs:
           fi
           counter=$(( $counter + 1))
           done
-          
+
+  run-performance-tests:
+    name: Run Performace Tests using K6
+    needs:
+      - changes
+      - deploy-to-gcp-dev
+ 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Build-K6-push-to-GAR
+        if: ${{ needs.changes.outputs.qa-tests == 'true' }}
+        run: |
+          K6-TAG=`cat qa-tests/VERSION.txt`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          echo $K6-TAG
+          echo "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG"
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG" qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG"
+
+      - name: Deploy Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v0'
+        with:
+          service: 'k6-test'
+          image: 'us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-k6-image:K6-TAG'
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
