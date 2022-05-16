@@ -1,15 +1,25 @@
-name: GCloud Build
+name: build-push-gar
 on:
   push:
     branches-ignore:
       - main
-  pull_request:
-    branches: [main]
-           
+    paths-ignore:
+      - 'DCOS/**'
+      - 'K8s/**'
+      - 'load-gen/**'
+      - 'OpenShift/**'
+      - 'Swarm/**'
+       
   workflow_dispatch:
+    paths-ignore:
+      - 'DCOS/**'
+      - 'K8s/**'
+      - 'load-gen/**'
+      - 'OpenShift/**'
+      - 'Swarm/**'
 
 env:
-  GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv/stans-robot-shop
+  GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
   CART_APP_NAME: rs-cart
   SHIPPING_APP_NAME: rs-shipping
   CATALOGUE_APP_NAME: rs-catalogue
@@ -40,16 +50,13 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       redis: ${{ steps.filter.outputs.redis }}
       rabbitmq: ${{ steps.filter.outputs.rabbitmq }}
-      mockitoapp: ${{ steps.filter.outputs.mockitoapp}}
-        
+              
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
         filters: |
-          mockitoapp:
-            - 'mockitoApp/**'
           cart:
             - 'cart/**'
           catalogue:
@@ -75,81 +82,10 @@ jobs:
           rabbitmq:
             - added|deleted|modified: 'rabbitmq/**'    
   
-  build-mockito-app:
-    name: Building Mockito Demo App
-    needs: changes
-    if: ${{ needs.changes.outputs.mockitoapp == 'true' }}
-    runs-on: ubuntu-latest
   
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-          cache: Maven
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-          
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
-          
-      - name: Build and analyze on PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
-        if: github.event_name == 'pull_request'
-        run: |
-          cd mockitoApp
-          mvn versions:set -DnewVersion=1.0.${{ github.event.pull_request.number }}
-          mvn deploy \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=cdo-triangulum-ctv \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          -Dsonar.scm.forceReloadAll=true
-        
-      - name: Build and analyze on Push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_GCP_TOKEN }}
-          SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
-        if: github.event_name == 'push'
-        run: |
-          cd mockitoApp
-          mvn versions:set -DnewVersion=1.0.SNAPTHOT.$(date +%s)
-          mvn deploy \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=cdo-triangulum-ctv \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-          echo "List of files are folders generated are:"
-          ls -lR
-      - name: Jacoco Report
-        id: jacoco
-        uses: madrapps/jacoco-report@v1.2
-        with:
-          paths: mockitoApp/target/site/jacoco/jacoco.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: "mockitoApp/target/surefire-reports/*.xml"
-          report_individual_runs: "true"
-
+  # Command to Increment the Version 
+  # find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
+  
   build-cart:
     name: Building CART IMAGE
     needs: changes
@@ -163,7 +99,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -173,8 +109,19 @@ jobs:
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
       # Build the Docker image
-       
       - name: Build-and-push-to-GAR
+      # if: github.event_name == 'pull_request'
+      # export TAG=`cat VERSION.txt  | awk -F'[.]'  '{
+      #           major=$1;
+      #           minor=$2;
+      #           patch=$3;
+      #           patch += 1;
+      #           minor += patch / 100;
+      #           patch = patch % 100
+      #           major += minor / 10;
+      #           minor = minor % 10;
+      #           printf( "%01d.%01d.%02d\n", major, minor, patch );
+      # }'`
         run: |
           export TAG=`cat cart/VERSION.txt`
           echo $TAG
@@ -182,7 +129,7 @@ jobs:
           docker build -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
           gcloud info
           docker push "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
-  
+          printf %s $TAG > VERSION.txt
   build-catalogue:
     name: Building CATALOGUE IMAGE
     needs: changes
@@ -196,7 +143,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -229,7 +176,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -261,7 +208,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -294,7 +241,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -327,7 +274,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -359,7 +306,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -378,6 +325,7 @@ jobs:
           docker build -t "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG" ratings/
           gcloud info
           docker push "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
+  
   build-shipping:
     name: Building SHIPPING IMAGE
     needs: changes
@@ -406,12 +354,12 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          #credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
           # Below is a method of using Managed Identity Pools in GCP"
-          workload_identity_provider: "${{ secrets.workload_identity_provider }}"
-          service_account: 'triangulumadmin@triangulum-ctv.iam.gserviceaccount.com'
-          project_id: triangulum-ctv
-          token_format: 'access_token'
+          #workload_identity_provider: "${{ secrets.workload_identity_provider }}"
+          #service_account: 'triangulum-ctv-sa@triangulum-ctv-349103.iam.gserviceaccount.com'
+          #project_id: triangulum-ctv
+          #token_format: 'access_token'
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -456,7 +404,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -488,7 +436,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -521,7 +469,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -553,7 +501,7 @@ jobs:
       - name: Setup GCP Service Account
         uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
@@ -572,3 +520,67 @@ jobs:
           docker build -t "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG" rabbitmq/
           gcloud info
           docker push "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
+
+  deploy-to-gcp-dev:
+    name: Deploy to GCP Dev Env
+    needs:
+      - build-cart
+ 
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Call Google Cloud Deploy
+        run: |
+          cd K8s
+          env TZ=EST5EDT date
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud deploy releases create rel-$date_var --delivery-pipeline=robot-shop-gcp --region=us-central1
+      
+      - name: verify if the rollout is success
+        run: |
+          sleep 60
+          counter=0
+          while [ $counter -lt 20 ]
+          do
+          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | tee /dev/tty | grep state: | cut -f2 -d: | cut -d' ' -f2`
+          if [ "$some_val" == "IN_PROGRESS" ]
+          then
+            echo "Deployment in Progress Time is: `date`"
+              sleep 30
+              continue
+          elif [ "$some_val" == "SUCCEEDED" ]
+          then
+            echo "Deployment is Succeeded Time is: `date`	"
+              exit 0
+          else
+            echo "Deployment Failed Time is: `date`"
+              exit 1
+          fi
+          counter=$(( $counter + 1))
+          done
+          
+
+# Reference Commands
+#Update Version numbers of the microservices in robot-shop
+#find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
+#Delete Cloud Deploy Delivery Pipelines
+#gcloud deploy delete --file=clouddeploy.yaml --region=us-central1 --force
+#Apply/Create a new Delivery Pipeline
+#gcloud deploy apply --file=clouddeploy.yaml --region=us-central1
+# Deploying to Target Dev using GCP
+#gcloud deploy releases create release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
+#Get the status of Rollout
+#gcloud deploy rollouts describe release-0514-0813-to-dev-0001 --release=release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
