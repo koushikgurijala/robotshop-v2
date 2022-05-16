@@ -5,3 +5,4 @@ services:
     command: run /scripts/test.js
     volumes:
       - ./scripts:/scripts
+# adding comment
