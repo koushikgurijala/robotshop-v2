@@ -45,6 +45,6 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v0'
         with:
           service: 'k6-test'
-          image: '$GAR_K6_INFO/rs-k6-image:K6_TAG'
+          image: '$GAR_K6_INFO/rs-k6-image:$K6_TAG'
 
   
