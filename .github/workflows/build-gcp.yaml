@@ -597,11 +597,14 @@ jobs:
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
 
+      - name: set K6 image TAG
+        run: |
+          K6-TAG=`cat qa-tests/VERSION.txt`
+          echo "K6-TAG=$K6-TAG" >> $GITHUB_ENV
+
       - name: Build-K6-push-to-GAR
         if: ${{ needs.changes.outputs.qa-tests == 'true' }}
         run: |
-          K6-TAG=`cat qa-tests/VERSION.txt`
-          echo "date_var=$date_var" >> $GITHUB_ENV
           echo $K6-TAG
           echo "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG"
           docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6-TAG" qa-tests/
