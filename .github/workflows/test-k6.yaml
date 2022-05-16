@@ -44,5 +44,7 @@ jobs:
       - name: Deploy Cloud Run
         id: deploy-cloudrun
         run: |
-          gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"  
+          gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --command "k6 run /scripts/test.js"
+
+     #gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"  --region=us-central1
     
