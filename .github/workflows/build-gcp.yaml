@@ -1,14 +1,14 @@
 name: build-push-gar
 on:
-  push:
-     branches-ignore:
-       - main
-     paths-ignore:
-       - 'DCOS/**'
-       - 'K8s/**'
-       - 'load-gen/**'
-       - 'OpenShift/**'
-       - 'Swarm/**'
+  # push:
+  #    branches-ignore:
+  #      - main
+  #    paths-ignore:
+  #      - 'DCOS/**'
+  #      - 'K8s/**'
+  #      - 'load-gen/**'
+  #      - 'OpenShift/**'
+  #      - 'Swarm/**'
        
   workflow_dispatch:
     paths-ignore:
