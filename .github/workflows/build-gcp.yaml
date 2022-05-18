@@ -579,7 +579,9 @@ jobs:
 
   run-k6-tests:
     name: K6 Load Test
-    needs: build-cart
+    needs: 
+      - deploy-to-gcp-dev
+      
     runs-on: ubuntu-latest
     
     steps:
