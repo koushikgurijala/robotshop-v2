@@ -38,7 +38,7 @@ jobs:
         run: |
           echo $K6_TAG
           echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f Dockerfile-k6 qa-tests/
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
           gcloud info
           docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
@@ -48,7 +48,7 @@ jobs:
   
   run-taurus-tests:
     name: Taurus Load Test
-   
+    needs: run-k6-tests
     runs-on: ubuntu-latest
     
     steps:
@@ -76,7 +76,7 @@ jobs:
         run: |
           echo $K6_TAG
           echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"-f qa-tests/
+          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
           gcloud info
           docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
 
