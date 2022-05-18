@@ -44,7 +44,7 @@ jobs:
 
       - name: Deploy Cloud Run
         run: |
-           gcloud beta run jobs create k6-load-test --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --execute-now --region europe-west9
+           gcloud beta run jobs create k6-load-test --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --execute-now --region europe-west9 --quiet
   
   run-taurus-tests:
     name: Taurus Load Test
@@ -82,7 +82,7 @@ jobs:
 
       - name: Run Taurus Scripts
         run: |
-          gcloud beta run jobs create taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --execute-now --region europe-west9
+          gcloud beta run jobs create taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --execute-now --region europe-west9 --quiet
 
      #gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"  --region=us-central1
     
