@@ -92,7 +92,9 @@ jobs:
 
       - name: Run Taurus Scripts
         run: |
-          gcloud beta run jobs create taurus-load-test-"$K6_TAG"-$date_var --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
           
       # gcloud beta run jobs execute taurus-load-test --region europe-west9
       #Reference Command to create a Job and Run    
