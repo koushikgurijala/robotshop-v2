@@ -44,9 +44,9 @@ jobs:
           gcloud info
           docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
-      - name: Deploy Cloud Run
+      - name: Deploy Cloud Run Jobs
         run: |
-           gcloud beta run jobs execute k6-load-test --region europe-west9
+           gcloud beta run jobs execute k6-load-test --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9
 
   run-taurus-tests:
     name: Taurus Load Test
