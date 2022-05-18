@@ -24,6 +24,8 @@ jobs:
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
 
       - name: Setup Docker
         run: |
@@ -62,6 +64,8 @@ jobs:
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
 
       - name: Setup Docker
         run: |
