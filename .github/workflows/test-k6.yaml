@@ -35,6 +35,8 @@ jobs:
         run: |
           K6_TAG=`cat qa-tests/VERSION.txt`
           echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
 
       - name: Build-K6-push-to-GAR
         run: |
@@ -46,7 +48,7 @@ jobs:
 
       - name: Deploy Cloud Run Jobs
         run: |
-           gcloud beta run jobs execute k6-load-test --region europe-west9
+          gcloud beta run jobs create k6-load-test-"$K6_TAG"-$date_var --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
 
   run-taurus-tests:
     name: Taurus Load Test
@@ -86,7 +88,7 @@ jobs:
 
       - name: Run Taurus Scripts
         run: |
-          gcloud beta run jobs create taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+          gcloud beta run jobs create taurus-load-test-"$K6_TAG"-$date_var --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
           
       # gcloud beta run jobs execute taurus-load-test --region europe-west9
       #Reference Command to create a Job and Run    
