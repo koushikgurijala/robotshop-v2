@@ -579,7 +579,7 @@ jobs:
 
   run-k6-tests:
     name: K6 Load Test
-   
+    needs: build-cart
     runs-on: ubuntu-latest
     
     steps:
