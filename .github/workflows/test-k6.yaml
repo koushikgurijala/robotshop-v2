@@ -5,7 +5,7 @@ on:
       - main
   workflow_dispatch:
 env:
-  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images
 
 jobs:
   run-k6-tests:
@@ -46,8 +46,8 @@ jobs:
 
       - name: Deploy Cloud Run
         run: |
-           gcloud beta run jobs execute k6-load-test --region europe-west9 --quiet
-  
+           gcloud beta run jobs execute k6-load-test --region europe-west9
+
   run-taurus-tests:
     name: Taurus Load Test
     needs: run-k6-tests
@@ -86,7 +86,7 @@ jobs:
 
       - name: Run Taurus Scripts
         run: |
-          gcloud beta run jobs update taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --execute-now --region europe-west9
+          gcloud beta run jobs create taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9
           
       # gcloud beta run jobs execute taurus-load-test --region europe-west9
       #Reference Command to create a Job and Run    
