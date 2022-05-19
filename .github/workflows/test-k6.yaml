@@ -1,15 +1,15 @@
 name: test-k6-execution
 on:
-  push:
-    branches-ignore:
-      - main
+  # push:
+  #   branches-ignore:
+  #     - main
   workflow_dispatch:
 env:
-  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images
 
 jobs:
-  run-performance-tests:
-    name: Run Performace Tests using K6
+  run-k6-tests:
+    name: K6 Load Test
    
     runs-on: ubuntu-latest
     
@@ -24,6 +24,8 @@ jobs:
       
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
 
       - name: Setup Docker
         run: |
@@ -33,19 +35,68 @@ jobs:
         run: |
           K6_TAG=`cat qa-tests/VERSION.txt`
           echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          job_k6_name=k6-load-test-$K6_TAG-$date_var
+          echo "job_k6_name=$job_k6_name" >> GITHUB_ENV
 
       - name: Build-K6-push-to-GAR
         run: |
           echo $K6_TAG
           echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
           gcloud info
           docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
-      - name: Deploy Cloud Run
-        id: deploy-cloudrun
+      - name: Deploy Cloud Run Jobs
         run: |
-          gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region=us-central1
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
 
-     #gcloud run deploy k6-test-web --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"  --region=us-central1
+  run-taurus-tests:
+    name: Taurus Load Test
+    needs: run-k6-tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: set Taurus image TAG
+        run: |
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+
+      - name: Build Taurus Image
+        run: |
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+
+      - name: Run Taurus Scripts
+        run: |
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+          
+      # gcloud beta run jobs execute taurus-load-test --region europe-west9
+      #Reference Command to create a Job and Run    
+      #gcloud beta run jobs create taurus-load-test --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --execute-now --region europe-west9
     

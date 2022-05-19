@@ -1,6 +1,5 @@
 name: build-push-gar
 on:
-<<<<<<< HEAD
   push:
     branches-ignore:
       - main
@@ -10,7 +9,6 @@ on:
       - 'load-gen/**'
       - 'OpenShift/**'
       - 'Swarm/**'
-=======
   # push:
   #    branches-ignore:
   #      - main
@@ -20,7 +18,6 @@ on:
   #      - 'load-gen/**'
   #      - 'OpenShift/**'
   #      - 'Swarm/**'
->>>>>>> d1b68008213f3fb3cdc0e5b82466af4c1c65ea85
        
   workflow_dispatch:
     paths-ignore:
@@ -32,10 +29,8 @@ on:
 
 env:
   GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
-<<<<<<< HEAD
-=======
   GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
->>>>>>> d1b68008213f3fb3cdc0e5b82466af4c1c65ea85
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images
   CART_APP_NAME: rs-cart
   SHIPPING_APP_NAME: rs-shipping
   CATALOGUE_APP_NAME: rs-catalogue
@@ -66,10 +61,7 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       redis: ${{ steps.filter.outputs.redis }}
       rabbitmq: ${{ steps.filter.outputs.rabbitmq }}
-<<<<<<< HEAD
-=======
       qa-tests: ${{ steps.filter.outputs.qa-tests }}
->>>>>>> d1b68008213f3fb3cdc0e5b82466af4c1c65ea85
               
     steps:
     - uses: actions/checkout@v3
@@ -544,11 +536,10 @@ jobs:
           gcloud info
           docker push "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
 
-<<<<<<< HEAD
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
 #find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
-=======
+
   deploy-to-gcp-dev:
     name: Deploy to GCP Dev Env
     needs:
@@ -600,49 +591,95 @@ jobs:
           counter=$(( $counter + 1))
           done
 
-  # run-performance-tests:
-  #   name: Run Performace Tests using K6
-  #   needs:
-  #     - changes
-  #     - deploy-to-gcp-dev
- 
-  #   runs-on: ubuntu-latest
-    
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-                        
-  #     - name: Setup GCP Service Account
-  #       uses: "google-github-actions/auth@v0"
-  #       with:
-  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  run-k6-tests:
+    name: K6 Load Test
+    needs: 
+      - deploy-to-gcp-dev
       
-  #     - name: Set up Cloud SDK
-  #       uses: 'google-github-actions/setup-gcloud@v0'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
 
-  #     - name: Setup Docker
-  #       run: |
-  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
-  #     - name: set K6 image TAG
-  #       run: |
-  #         K6_TAG=`cat qa-tests/VERSION.txt`
-  #         echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+      - name: set K6 image TAG
+        run: |
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          job_k6_name=k6-load-test-$K6_TAG-$date_var
+          echo "job_k6_name=$job_k6_name" >> GITHUB_ENV
 
-  #     - name: Build-K6-push-to-GAR
-  #       if: ${{ needs.changes.outputs.qa-tests == 'true' }}
-  #       run: |
-  #         echo $K6_TAG
-  #         echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-  #         docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" qa-tests/
-  #         gcloud info
-  #         docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+      - name: Build-K6-push-to-GAR
+        run: |
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
-  #     - name: Deploy Cloud Run
-  #       uses: 'google-github-actions/deploy-cloudrun@v0'
-  #       with:
-  #         service: 'k6-test'
-  #         image: '$GAR_K6_INFO/rs-k6-image:$K6_TAG'
+      - name: Deploy Cloud Run Jobs
+        run: |
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
+
+  run-taurus-tests:
+    name: Taurus Load Test
+    needs: run-k6-tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: set Taurus image TAG
+        run: |
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+
+      - name: Build Taurus Image
+        run: |
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+
+      - name: Run Taurus Scripts
+        run: |
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
@@ -655,4 +692,4 @@ jobs:
 #gcloud deploy releases create release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
 #Get the status of Rollout
 #gcloud deploy rollouts describe release-0514-0813-to-dev-0001 --release=release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
->>>>>>> d1b68008213f3fb3cdc0e5b82466af4c1c65ea85
+

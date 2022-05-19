@@ -1,0 +1,6 @@
+FROM loadimpact/k6:latest
+COPY scripts /scripts/
+USER root
+RUN chmod +x -R /scripts
+RUN ls -ltr /scripts
+ENTRYPOINT ["k6", "run", "/scripts/test.js"]
