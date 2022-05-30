@@ -1,13 +1,36 @@
-name: GCloud Build
+name: build-push-gar
 on:
   push:
     branches-ignore:
       - main
+    paths-ignore:
+      - 'DCOS/**'
+      - 'K8s/**'
+      - 'load-gen/**'
+      - 'OpenShift/**'
+      - 'Swarm/**'
+  # push:
+  #    branches-ignore:
+  #      - main
+  #    paths-ignore:
+  #      - 'DCOS/**'
+  #      - 'K8s/**'
+  #      - 'load-gen/**'
+  #      - 'OpenShift/**'
+  #      - 'Swarm/**'
        
   workflow_dispatch:
+    paths-ignore:
+      - 'DCOS/**'
+      - 'K8s/**'
+      - 'load-gen/**'
+      - 'OpenShift/**'
+      - 'Swarm/**'
 
 env:
   GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
+  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images
   CART_APP_NAME: rs-cart
   SHIPPING_APP_NAME: rs-shipping
   CATALOGUE_APP_NAME: rs-catalogue
@@ -20,7 +43,7 @@ env:
   WEB_APP_NAME: rs-web
   REDIS_APP_NAME: redis
   RABBITMQ_APP_NAME: rabbitmq
-
+  
 jobs:
   changes:
     name: Track Changes in Services
@@ -38,20 +61,20 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       redis: ${{ steps.filter.outputs.redis }}
       rabbitmq: ${{ steps.filter.outputs.rabbitmq }}
-      mockitoapp: ${{ steps.filter.outputs.mockitoapp}}
-        
+      qa-tests: ${{ steps.filter.outputs.qa-tests }}
+              
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
         filters: |
-          mockitoapp:
-            - 'mockitoApp/**'
           cart:
             - 'cart/**'
           catalogue:
             - 'catalogue/**'
+          qa-tests:
+            - 'qa-tests/**'
           dispatch: 
             - added|deleted|modified: 'dispatch/**'
           mongo:
@@ -73,81 +96,7 @@ jobs:
           rabbitmq:
             - added|deleted|modified: 'rabbitmq/**'    
   
-  # build-mockito-app:
-  #   name: Building Mockito Demo App
-  #   needs: changes
-  #   if: ${{ needs.changes.outputs.mockitoapp == 'true' }}
-  #   runs-on: ubuntu-latest
   
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v1
-  #       with:
-  #         java-version: 17
-  #         cache: Maven
-  #     - name: Cache SonarCloud packages
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: ~/.sonar/cache
-  #         key: ${{ runner.os }}-sonar
-  #         restore-keys: ${{ runner.os }}-sonar
-  #     - name: Cache Maven packages
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: ~/.m2
-  #         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-  #         restore-keys: ${{ runner.os }}-m2
-          
-  #     - name: Setup GCP Service Account
-  #       uses: "google-github-actions/auth@v0"
-  #       with:
-  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
-          
-  #     - name: Build and analyze on PR
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
-  #       if: github.event_name == 'pull_request'
-  #       run: |
-  #         cd mockitoApp
-  #         mvn versions:set -DnewVersion=1.0.${{ github.event.pull_request.number }}
-  #         mvn deploy \
-  #         org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-  #         -Dsonar.projectKey=cdo-triangulum-ctv \
-  #         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-  #         -Dsonar.scm.forceReloadAll=true
-        
-  #     - name: Build and analyze on Push
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-  #         SONAR_TOKEN: ${{ secrets.SONARQUBE_GCP_TOKEN }}
-  #         SONARCLOUD_URL: 'https://sonarqube.cloudapps.telus.com'
-  #       if: github.event_name == 'push'
-  #       run: |
-  #         cd mockitoApp
-  #         mvn versions:set -DnewVersion=1.0.SNAPTHOT.$(date +%s)
-  #         mvn deploy \
-  #         org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-  #         -Dsonar.projectKey=cdo-triangulum-ctv \
-  #         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-  #         echo "List of files are folders generated are:"
-  #         ls -lR
-  #     - name: Jacoco Report
-  #       id: jacoco
-  #       uses: madrapps/jacoco-report@v1.2
-  #       with:
-  #         paths: mockitoApp/target/site/jacoco/jacoco.xml
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-          
-  #     - name: Publish Unit Test Results
-  #       uses: EnricoMi/publish-unit-test-result-action@v1
-  #       if: always()
-  #       with:
-  #         files: "mockitoApp/target/surefire-reports/*.xml"
-  #         report_individual_runs: "true"
-
   # Command to Increment the Version 
   # find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
   
@@ -195,298 +144,300 @@ jobs:
           gcloud info
           docker push "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
           printf %s $TAG > VERSION.txt
-  build-catalogue:
-    name: Building CATALOGUE IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.catalogue == 'true' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-                
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
-      
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
-      
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
-       
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat catalogue/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG" catalogue/
-          gcloud info
-          docker push "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG"
   
-  build-dispatch:
-    name: Building DISPATCH IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.dispatch == 'true' }}
-    runs-on: ubuntu-latest
+  # build-catalogue:
+  #   name: Building CATALOGUE IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.catalogue == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                 
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat dispatch/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG" dispatch/
-          gcloud info
-          docker push "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG"
-  build-mongo:
-    name: Building MONGODB IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.mongo == 'true' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-                
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
-      
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
-      
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
-       
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat mongo/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG" mongo/
-          gcloud info
-          docker push "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG"
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat catalogue/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG" catalogue/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$CATALOGUE_APP_NAME":"$TAG"
   
-  build-mysql:
-    name: Building MYSQL-DB IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.mysql == 'true' }}
-    runs-on: ubuntu-latest
+  # build-dispatch:
+  #   name: Building DISPATCH IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.dispatch == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                 
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat mysql/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG" mysql/
-          gcloud info
-          docker push "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG"
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat dispatch/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG" dispatch/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$DISPATCH_APP_NAME":"$TAG"
+  # build-mongo:
+  #   name: Building MONGODB IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.mongo == 'true' }}
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+                
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
+      
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
+       
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat mongo/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG" mongo/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$MONGO_APP_NAME":"$TAG"
   
-  build-payment:
-    name: Building PAYMENT IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.payment == 'true' }}
-    runs-on: ubuntu-latest
+  # build-mysql:
+  #   name: Building MYSQL-DB IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.mysql == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                 
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat payment/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG" payment/
-          gcloud info
-          docker push "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG"
-  build-ratings:
-    name: Building RATINGS IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.ratings == 'true' }}
-    runs-on: ubuntu-latest
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat mysql/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG" mysql/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$MYSQL_APP_NAME":"$TAG"
+  
+  # build-payment:
+  #   name: Building PAYMENT IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.payment == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                 
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat ratings/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG" ratings/
-          gcloud info
-          docker push "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
-  build-shipping:
-    name: Building SHIPPING IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.shipping == 'true' }}
-    runs-on: ubuntu-latest
-    permissions:
-     actions: write
-     checks: write
-     contents: write
-     deployments: write
-     id-token: write
-     issues: write
-     discussions: write
-     packages: write
-     pages: write
-     pull-requests: write
-     repository-projects: write
-     security-events: write
-     statuses: write
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat payment/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG" payment/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$PAYMENT_APP_NAME":"$TAG"
+  # build-ratings:
+  #   name: Building RATINGS IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.ratings == 'true' }}
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+                
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
+      
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
+       
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat ratings/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG" ratings/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$RATINGS_APP_NAME":"$TAG"
+  
+  # build-shipping:
+  #   name: Building SHIPPING IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.shipping == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #    actions: write
+  #    checks: write
+  #    contents: write
+  #    deployments: write
+  #    id-token: write
+  #    issues: write
+  #    discussions: write
+  #    packages: write
+  #    pages: write
+  #    pull-requests: write
+  #    repository-projects: write
+  #    security-events: write
+  #    statuses: write
       
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                        
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
-          # Below is a method of using Managed Identity Pools in GCP"
-          #workload_identity_provider: "${{ secrets.workload_identity_provider }}"
-          #service_account: 'triangulum-ctv-sa@triangulum-ctv-349103.iam.gserviceaccount.com'
-          #project_id: triangulum-ctv
-          #token_format: 'access_token'
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #         # Below is a method of using Managed Identity Pools in GCP"
+  #         #workload_identity_provider: "${{ secrets.workload_identity_provider }}"
+  #         #service_account: 'triangulum-ctv-sa@triangulum-ctv-349103.iam.gserviceaccount.com'
+  #         #project_id: triangulum-ctv
+  #         #token_format: 'access_token'
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      - name: Run Wiremock server
-        run: |
-          cd shipping
-          docker run -d -p 8080:8080 -v $PWD/src/test/resources:/home/wiremock --name wiremock wiremock/wiremock:2.33.1
-          docker container inspect wiremock
-          echo `docker container port wiremock`
-          mvn test
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     - name: Run Wiremock server
+  #       run: |
+  #         cd shipping
+  #         docker run -d -p 8080:8080 -v $PWD/src/test/resources:/home/wiremock --name wiremock wiremock/wiremock:2.33.1
+  #         docker container inspect wiremock
+  #         echo `docker container port wiremock`
+  #         mvn test
   
-      - name: Publish Wiremock Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: "shipping/target/surefire-reports/junitreports/*.xml"
+  #     - name: Publish Wiremock Test Results
+  #       uses: EnricoMi/publish-unit-test-result-action@v1
+  #       if: always()
+  #       with:
+  #         files: "shipping/target/surefire-reports/junitreports/*.xml"
        
-      - name: Build-and-push-to-GAR
-        run: |
-          echo `pwd`
-          export TAG=`cat shipping/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG" shipping/
-          gcloud info
-          docker push "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG"
-  build-user:
-    name: Building USER IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.user == 'true' }}
-    runs-on: ubuntu-latest
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         echo `pwd`
+  #         export TAG=`cat shipping/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG" shipping/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$SHIPPING_APP_NAME":"$TAG"
+  # build-user:
+  #   name: Building USER IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.user == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                 
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat user/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$USER_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$USER_APP_NAME":"$TAG" user/
-          gcloud info
-          docker push "$GAR_INFO"/"$USER_APP_NAME":"$TAG"
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat user/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$USER_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$USER_APP_NAME":"$TAG" user/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$USER_APP_NAME":"$TAG"
   build-web:
     name: Building WEB IMAGE
     needs: changes
@@ -520,71 +471,225 @@ jobs:
           gcloud info
           docker push "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
   
-  build-redis:
-    name: Building Redis IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.redis == 'true' }}
-    runs-on: ubuntu-latest
+  # build-redis:
+  #   name: Building Redis IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.redis == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                         
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat redis/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG" redis/
-          gcloud info
-          docker push "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG"
-  build-rabbitmq:
-    name: Building RabbitMQ IMAGE
-    needs: changes
-    if: ${{ needs.changes.outputs.rabbitmq == 'true' }}
-    runs-on: ubuntu-latest
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat redis/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG" redis/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$REDIS_APP_NAME":"$TAG"
+  
+  # build-rabbitmq:
+  #   name: Building RabbitMQ IMAGE
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.rabbitmq == 'true' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                         
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
       
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      # Build the Docker image
+  #     # Configure docker to use the gcloud command-line tool as a credential helper
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     # Build the Docker image
        
-      - name: Build-and-push-to-GAR
-        run: |
-          export TAG=`cat rabbitmq/VERSION.txt`
-          echo $TAG
-          echo "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG" rabbitmq/
-          gcloud info
-          docker push "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
+  #     - name: Build-and-push-to-GAR
+  #       run: |
+  #         export TAG=`cat rabbitmq/VERSION.txt`
+  #         echo $TAG
+  #         echo "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
+  #         docker build -t "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG" rabbitmq/
+  #         gcloud info
+  #         docker push "$GAR_INFO"/"$RABBITMQ_APP_NAME":"$TAG"
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop
 #find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
+
+  deploy-to-gcp-dev:
+    name: Deploy to GCP Dev Env
+    needs:
+      - build-cart
+ 
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Call Google Cloud Deploy
+        run: |
+          cd K8s
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud deploy releases create rel-$date_var --delivery-pipeline=robot-shop-gcp --region=us-central1
+      
+      - name: verify if the rollout is success
+        run: |
+          gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1
+          sleep 60
+          counter=0
+          while [ $counter -lt 20 ]
+          do
+          export some_val=`gcloud deploy rollouts describe rel-${{ env.date_var }}-to-dev-0001 --release=rel-${{ env.date_var }} --delivery-pipeline=robot-shop-gcp --region=us-central1 | grep state: | cut -f2 -d: | cut -d' ' -f2`
+          if [ "$some_val" == "IN_PROGRESS" ]
+          then
+            echo "Deployment in Progress Time is: `date`"
+              sleep 30
+              continue
+          elif [ "$some_val" == "SUCCEEDED" ]
+          then
+            echo "Deployment is Succeeded Time is: `date`	"
+              exit 0
+          else
+            echo "Deployment Failed Time is: `date`"
+              exit 1
+          fi
+          counter=$(( $counter + 1))
+          done
+
+  run-k6-tests:
+    name: K6 Load Test
+    needs: 
+      - deploy-to-gcp-dev
+      
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: set K6 image TAG
+        run: |
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          job_k6_name=k6-load-test-$K6_TAG-$date_var
+          echo "job_k6_name=$job_k6_name" >> GITHUB_ENV
+
+      - name: Build-K6-push-to-GAR
+        run: |
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+
+      - name: Deploy Cloud Run Jobs
+        run: |
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
+
+  run-taurus-tests:
+    name: Taurus Load Test
+    needs: run-k6-tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                        
+      - name: Setup GCP Service Account
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+      
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          install_components: 'beta'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: set Taurus image TAG
+        run: |
+          K6_TAG=`cat qa-tests/VERSION.txt`
+          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+
+      - name: Build Taurus Image
+        run: |
+          echo $K6_TAG
+          echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
+          gcloud info
+          docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+
+      - name: Run Taurus Scripts
+        run: |
+          date_var=`date +%m%d%y-%H%M`
+          echo "date_var=$date_var" >> $GITHUB_ENV
+          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+
+# Reference Commands
+#Update Version numbers of the microservices in robot-shop
+#find . -name VERSION.txt -exec bash -c "printf %s '1.3.0' > {}" \;
+#Delete Cloud Deploy Delivery Pipelines
+#gcloud deploy delete --file=clouddeploy.yaml --region=us-central1 --force
+#Apply/Create a new Delivery Pipeline
+#gcloud deploy apply --file=clouddeploy.yaml --region=us-central1
+# Deploying to Target Dev using GCP
+#gcloud deploy releases create release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
+#Get the status of Rollout
+#gcloud deploy rollouts describe release-0514-0813-to-dev-0001 --release=release-0514-0813 --delivery-pipeline=robot-shop-gcp --region=us-central1
