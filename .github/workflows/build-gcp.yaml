@@ -1,8 +1,9 @@
 name: build-push-gar
 on:
   push:
-    branches:
-      - devbranch-0516
+    branches-ignore:
+      - main
+      - devbranch0507
     paths-ignore:
       - 'DCOS/**'
       - 'K8s/**'
