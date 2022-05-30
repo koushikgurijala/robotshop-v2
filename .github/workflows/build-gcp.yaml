@@ -103,7 +103,6 @@ jobs:
     name: Building CART IMAGE
     needs: changes
     if: ${{ needs.changes.outputs.cart == 'true' }}
-    echo "outcart is ${{needs.changes.outputs.cart}}"
     runs-on: ubuntu-latest
   
     steps:
