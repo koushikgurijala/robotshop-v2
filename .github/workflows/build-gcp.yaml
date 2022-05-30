@@ -438,38 +438,38 @@ jobs:
   #         docker build -t "$GAR_INFO"/"$USER_APP_NAME":"$TAG" user/
   #         gcloud info
   #         docker push "$GAR_INFO"/"$USER_APP_NAME":"$TAG"
-  # build-web:
-  #   name: Building WEB IMAGE
-  #   needs: changes
-  #   if: ${{ needs.changes.outputs.web == 'true' }}
-  #   runs-on: ubuntu-latest
+    build-web:
+      name: Building WEB IMAGE
+      needs: changes
+      if: ${{ needs.changes.outputs.web == 'true' }}
+      runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
                         
-  #     - name: Setup GCP Service Account
-  #       uses: "google-github-actions/auth@v0"
-  #       with:
-  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+        - name: Setup GCP Service Account
+          uses: "google-github-actions/auth@v0"
+          with:
+            credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-  #     - name: Set up Cloud SDK
-  #       uses: 'google-github-actions/setup-gcloud@v0'
+        - name: Set up Cloud SDK
+          uses: 'google-github-actions/setup-gcloud@v0'
       
-  #     # Configure docker to use the gcloud command-line tool as a credential helper
-  #     - name: Setup Docker
-  #       run: |
-  #         gcloud auth configure-docker us-central1-docker.pkg.dev
-  #     # Build the Docker image
+        # Configure docker to use the gcloud command-line tool as a credential helper
+        - name: Setup Docker
+          run: |
+            gcloud auth configure-docker us-central1-docker.pkg.dev
+        # Build the Docker image
        
-  #     - name: Build-and-push-to-GAR
-  #       run: |
-  #         export TAG=`cat web/VERSION.txt`
-  #         echo $TAG
-  #         echo "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
-  #         docker build -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
-  #         gcloud info
-  #         docker push "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
+        - name: Build-and-push-to-GAR
+          run: |
+            export TAG=`cat web/VERSION.txt`
+            echo $TAG
+            echo "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
+            docker build -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
+            gcloud info
+            docker push "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
   
   # build-redis:
   #   name: Building Redis IMAGE
@@ -638,7 +638,7 @@ jobs:
         run: |
           date_var=`date +%m%d%y-%H%M`
           echo "date_var=$date_var" >> $GITHUB_ENV
-          gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
+          # gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
 
   run-taurus-tests:
     name: Taurus Load Test
@@ -680,7 +680,8 @@ jobs:
         run: |
           date_var=`date +%m%d%y-%H%M`
           echo "date_var=$date_var" >> $GITHUB_ENV
-          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+#         gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+          kubectl create deployment tarus-load-test —-image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop

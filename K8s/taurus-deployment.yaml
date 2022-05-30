@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taurus
+  labels:
+    service: taurus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: taurus
+  template:
+    metadata:
+      labels:
+        service: taurus
+    spec:
+      containers:
+      - name: taurus
+        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images/rs-taurus-image:1.0.8
+  
+
