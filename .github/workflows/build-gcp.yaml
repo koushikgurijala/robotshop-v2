@@ -29,7 +29,6 @@ on:
 
 env:
   GAR_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
-  GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-k6-image
   GAR_K6_INFO: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images
   CART_APP_NAME: rs-cart
   SHIPPING_APP_NAME: rs-shipping
