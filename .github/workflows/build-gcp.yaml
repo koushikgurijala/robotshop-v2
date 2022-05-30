@@ -63,7 +63,6 @@ jobs:
       qa-tests: ${{ steps.filter.outputs.qa-tests }}
               
     steps:
-    - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
