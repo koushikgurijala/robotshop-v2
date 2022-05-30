@@ -542,8 +542,10 @@ jobs:
 
   deploy-to-gcp-dev:
     name: Deploy to GCP Dev Env
-    # needs:
-    #   - build-cart
+    needs:
+      - build-cart
+      - build-rabbitmq
+
  
     runs-on: ubuntu-latest
     timeout-minutes: 10
