@@ -139,7 +139,7 @@ jobs:
           export TAG=`cat cart/VERSION.txt`
           echo $TAG
           echo "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
+          docker buil -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
           gcloud info
           docker push "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
           printf %s $TAG > VERSION.txt
@@ -466,7 +466,7 @@ jobs:
           export TAG=`cat web/VERSION.txt`
           echo $TAG
           echo "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
-          docker buil -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
+          docker build -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
           gcloud info
           docker push "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
   
@@ -542,7 +542,7 @@ jobs:
 
   deploy-to-gcp-dev:
     name: Deploy to GCP Dev Env
-    needs: [build-web, build-rabbitmq]
+    needs: [build-web, build-rabbitmq, build-cart]
     if: ${{ always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) }}
     
 
