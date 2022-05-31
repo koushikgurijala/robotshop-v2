@@ -543,7 +543,7 @@ jobs:
   deploy-to-gcp-dev:
     name: Deploy to GCP Dev Env
     needs: [build-web, build-rabbitmq]
-    if: ${{ contains(needs.*.result, 'success') && contains(needs.*.result, 'skipped') }}
+    if: ${{ contains(needs.*.result, 'success') && contains(needs.*.result, 'failure') }}
     
 
  
