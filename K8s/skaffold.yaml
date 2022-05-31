@@ -10,7 +10,7 @@ profiles:
         - helm/templates/cart-deployment.yaml
         - helm/templates/web-deployment.yaml
         flags:
-          apply:
+          global:
           - --namespace=robot-shop-dev
 
   - name: prod
