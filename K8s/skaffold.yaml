@@ -17,7 +17,7 @@ profiles:
     deploy: 
       kubectl:
         manifests:
-        - helm/templates/*.yaml
+        - helm/templates/cart-deployment.yaml
         flags:
           global:
           - --namespace=robot-shop-prod
