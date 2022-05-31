@@ -139,7 +139,7 @@ jobs:
           export TAG=`cat cart/VERSION.txt`
           echo $TAG
           echo "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
-          docker buil -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
+          docker build -t "$GAR_INFO"/"$CART_APP_NAME":"$TAG" cart/
           gcloud info
           docker push "$GAR_INFO"/"$CART_APP_NAME":"$TAG"
           printf %s $TAG > VERSION.txt

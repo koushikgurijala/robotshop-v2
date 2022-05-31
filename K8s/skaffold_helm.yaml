@@ -5,15 +5,28 @@ metadata:
 profiles:
   - name: dev
     deploy:
-      kubectl:
-        manifests:
-        - helm/templates/cart-deployment.yaml
-
+      helm:
+        releases:
+        - name: dev
+          namespace: robot-shop-dev
+          chartPath: helm
+          recreatePods: false
+          valuesFiles:
+            - helm/values.yaml
+          imageStrategy:
+            helm: {}
   - name: prod
     deploy:
-      kubectl:
-        manifests:
-        - helm/templates/cart-deployment.yaml
+      helm:
+        releases:
+        - name: prod
+          namespace: robot-shop-prod
+          chartPath: helm
+          recreatePods: false
+          valuesFiles:
+            - helm/values.yaml
+          imageStrategy:
+            helm: {}
  
 
 
