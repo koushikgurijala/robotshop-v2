@@ -10,11 +10,11 @@ profiles:
         - helm/templates/cart-deployment.yaml
         - helm/templates/web-deployment.yaml
         flags:
-          global:
+          apply:
           - --namespace=robot-shop-dev
 
   - name: prod
-    deploy:
+    deploy: 
       kubectl:
         manifests:
         - helm/templates/*.yaml
