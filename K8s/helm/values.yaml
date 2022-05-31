@@ -6,15 +6,11 @@ image:
   pullPolicy: IfNotPresent
 
 webimage:
-  repo: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
   version: 1.3.3
-  pullPolicy: IfNotPresent
 
 cartimage:
-  repo: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop
   version: 1.3.0
-  pullPolicy: IfNotPresent
-
+  
 
 # Alternative payment gateway URL
 # Default is https://www.paypal.com
