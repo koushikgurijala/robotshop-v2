@@ -466,7 +466,7 @@ jobs:
           export TAG=`cat web/VERSION.txt`
           echo $TAG
           echo "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
-          docker build -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
+          docker buil -t "$GAR_INFO"/"$WEB_APP_NAME":"$TAG" web/
           gcloud info
           docker push "$GAR_INFO"/"$WEB_APP_NAME":"$TAG"
   
