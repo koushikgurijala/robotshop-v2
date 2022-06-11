@@ -14,13 +14,10 @@ spec:
       labels:
         service: mysql
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: mysql
-        image: {{ .Values.image.repo }}/rs-mysql-db:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-mysql:1.0.0
+        imagePullPolicy: IfNotPresent
         # added for Istio
         securityContext:
           capabilities:

@@ -14,13 +14,10 @@ spec:
       labels:
         service: ratings
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: ratings
-        image: {{ .Values.image.repo }}/rs-ratings:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-ratings:1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         resources:

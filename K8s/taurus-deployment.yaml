@@ -1,21 +1,32 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: taurus
-  labels:
-    service: taurus
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      service: taurus
   template:
     metadata:
-      labels:
-        service: taurus
+      name: example-job
+      annotations:
+            sidecar.istio.io/inject: "false"
     spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: taurus-key
       containers:
       - name: taurus
-        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images/rs-taurus-image:1.0.8
-  
-
+        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-qa-images/rs-taurus-image:latest
+        # command: ["sh"]
+        # args: ["/scripts/taurus_run_store.sh"]
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        command: ["sh"]
+        args: ["/scripts/taurus_run_store.sh"]
+      # Do not restart containers after they exit
+      restartPolicy: Never
+  # of retries before marking as failed.
+  backoffLimit: 4

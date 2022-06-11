@@ -14,18 +14,10 @@ spec:
       labels:
         service: catalogue
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: catalogue
-        image: {{ .Values.image.repo }}/rs-catalogue:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-          - name: INSTANA_AGENT_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-catalogue:1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         resources:

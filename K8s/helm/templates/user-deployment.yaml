@@ -14,13 +14,10 @@ spec:
       labels:
         service: user
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: user
-        image: {{ .Values.image.repo }}/rs-user:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-user:1.0.0
+        imagePullPolicy: IfNotPresent
         env:
           # agent networking access
           - name: INSTANA_AGENT_HOST

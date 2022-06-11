@@ -14,13 +14,10 @@ spec:
       labels:
         service: rabbitmq
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: rabbitmq
         image: rabbitmq:3.7-management-alpine
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: 
         ports:
         - containerPort: 5672
         - containerPort: 15672

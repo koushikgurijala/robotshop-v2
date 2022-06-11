@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-web:1.4.0
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-web:1.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

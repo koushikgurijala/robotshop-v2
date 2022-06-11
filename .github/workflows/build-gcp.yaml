@@ -593,57 +593,57 @@ jobs:
           counter=$(( $counter + 1))
           done
 
-  run-k6-tests:
-    name: K6 Load Test
-    needs: 
-      - deploy-to-gcp-dev
+  # run-k6-tests:
+  #   name: K6 Load Test
+  #   needs: 
+  #     - deploy-to-gcp-dev
       
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
                         
-      - name: Setup GCP Service Account
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
+  #     - name: Setup GCP Service Account
+  #       uses: "google-github-actions/auth@v0"
+  #       with:
+  #         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS_P }}"
       
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
-        with:
-          install_components: 'beta'
+  #     - name: Set up Cloud SDK
+  #       uses: 'google-github-actions/setup-gcloud@v0'
+  #       with:
+  #         install_components: 'beta'
 
-      - name: Setup Docker
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+  #     - name: Setup Docker
+  #       run: |
+  #         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      - name: set K6 image TAG
-        run: |
-          K6_TAG=`cat qa-tests/VERSION.txt`
-          echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
-          date_var=`date +%m%d%y-%H%M`
-          echo "date_var=$date_var" >> $GITHUB_ENV
-          job_k6_name=k6-load-test-$K6_TAG-$date_var
-          echo "job_k6_name=$job_k6_name" >> GITHUB_ENV
+  #     - name: set K6 image TAG
+  #       run: |
+  #         K6_TAG=`cat qa-tests/VERSION.txt`
+  #         echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
+  #         date_var=`date +%m%d%y-%H%M`
+  #         echo "date_var=$date_var" >> $GITHUB_ENV
+  #         job_k6_name=k6-load-test-$K6_TAG-$date_var
+  #         echo "job_k6_name=$job_k6_name" >> GITHUB_ENV
 
-      - name: Build-K6-push-to-GAR
-        run: |
-          echo $K6_TAG
-          echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
-          gcloud info
-          docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+  #     - name: Build-K6-push-to-GAR
+  #       run: |
+  #         echo $K6_TAG
+  #         echo "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
+  #         docker build -t "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" -f qa-tests/Dockerfile-k6 qa-tests/
+  #         gcloud info
+  #         docker push "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG"
 
-      - name: Deploy Cloud Run Jobs
-        run: |
-          date_var=`date +%m%d%y-%H%M`
-          echo "date_var=$date_var" >> $GITHUB_ENV
-          gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
+  #     - name: Deploy Cloud Run Jobs
+  #       run: |
+  #         date_var=`date +%m%d%y-%H%M`
+  #         echo "date_var=$date_var" >> $GITHUB_ENV
+  #         gcloud beta run jobs create k6-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-k6-image:"$K6_TAG" --region europe-west9 --execute-now
 
   run-taurus-tests:
     name: Taurus Load Test
-    needs: run-k6-tests
+    needs: deploy-to-gcp-dev
     runs-on: ubuntu-latest
     
     steps:
@@ -669,19 +669,20 @@ jobs:
           K6_TAG=`cat qa-tests/VERSION.txt`
           echo "K6_TAG=$K6_TAG" >> $GITHUB_ENV
 
-      - name: Build Taurus Image
-        run: |
-          echo $K6_TAG
-          echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
-          docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
-          gcloud info
-          docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+      # - name: Build Taurus Image
+      #   run: |
+      #     echo $K6_TAG
+      #     echo "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
+      #     docker build -t "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" qa-tests/
+      #     gcloud info
+      #     docker push "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG"
 
       - name: Run Taurus Scripts
         run: |
           date_var=`date +%m%d%y-%H%M`
           echo "date_var=$date_var" >> $GITHUB_ENV
-          gcloud beta run jobs create taurus-load-test-`date +%m%d%y-%H%M` --image "$GAR_K6_INFO"/rs-taurus-image:"$K6_TAG" --region europe-west9 --execute-now
+          kubectl apply -f K8s/taurus-deployment/yaml -n robot-shop-dev 
+          
 
 # Reference Commands
 #Update Version numbers of the microservices in robot-shop

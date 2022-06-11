@@ -14,19 +14,10 @@ spec:
       labels:
         service: dispatch
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: dispatch
-        image: {{ .Values.image.repo }}/rs-dispatch:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-          # agent networking access
-          - name: INSTANA_AGENT_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-dispatch:1.0.0
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             cpu: 200m

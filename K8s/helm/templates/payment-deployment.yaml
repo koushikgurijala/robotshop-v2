@@ -17,23 +17,10 @@ spec:
         service: payment
         stage: prod
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: payment
-        image: {{ .Values.image.repo }}/rs-payment:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        # agent networking access
-        env:
-          - name: INSTANA_AGENT_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
-          {{- if .Values.payment.gateway }}
-          - name: PAYMENT_GATEWAY
-            value: {{ .Values.payment.gateway }}
-          {{- end }}
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-payment:1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         resources:

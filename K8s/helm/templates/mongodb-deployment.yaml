@@ -14,13 +14,10 @@ spec:
       labels:
         service: mongodb
     spec:
-      {{ if .Values.psp.enabled }}
-      serviceAccountName: robot-shop
-      {{ end }}
       containers:
       - name: mongodb
-        image: {{ .Values.image.repo }}/rs-mongodb:{{ .Values.image.version }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-mongo:1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 27017
         resources:

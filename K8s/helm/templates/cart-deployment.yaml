@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: us-central1-docker.pkg.dev/triangulum-ctv-349103/telus-robot-shop/rs-cart:1.3.6
+        image: us-central1-docker.pkg.dev/triangulum-ctv-0608/telus-robot-shop/rs-cart:1.0.0
         imagePullPolicy: IfNotPresent
         # agent networking access
         env:
